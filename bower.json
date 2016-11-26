@@ -1,0 +1,17 @@
+{
+  "name": "create-a-hype",
+  "version": "0.1.0",
+  "homepage": "",
+  "authors": ["Hyperr"],
+  "description": "Embeddable Hypes in Your Website",
+  "main": "hyperr.createahype.js",
+  "license": "ISC",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "package.json"
+  ],
+  "dependencies": {}
+}
