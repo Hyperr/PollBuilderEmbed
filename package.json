@@ -1,9 +1,9 @@
 {
-  "name": "create-a-hype",
-  "version": "0.1.0",
+  "name": "hyperr-pollbuilder",
+  "version": "1.0.0",
   "description": "Embeddable Hypes in Your Website",
-  "main": "hyperr.createahype.js",
+  "main": "dist/hyperr.pollbuilder.min.js",
   "scripts": {},
   "author": "Hyperr",
-  "license": "ISC"
+  "license": "UNLICENSED"
 }
