@@ -1,5 +1,9 @@
 
-// v1.0.0
+/*******************************************************
+ * Copyright (C) 2016 PTP APP LLC - All Rights Reserved
+ * Unauthorized copying of this file, in whole or in part, via any medium is strictly prohibited.
+ * Proprietary and Confidential
+ *******************************************************/
 
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
