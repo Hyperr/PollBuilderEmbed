@@ -24,7 +24,10 @@
 		embed: addEmbed,
 		
 		// read-only for whether or not this component is supported
-		get supported(){ return dragAndDropExists(); }
+		get supported(){ return dragAndDropExists(); },
+		
+		// version is important so that poll-builder served from hyperr knows what script is in use
+		version: '1.0.1'
 	}
 	
 	// need to keep a list of droppable iframes and their layovers in order to shut them off whenever dragging
