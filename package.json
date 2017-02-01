@@ -5,5 +5,11 @@
   "main": "dist/hyperr.pollbuilder.min.js",
   "scripts": {},
   "author": "Hyperr",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "scripts": {
+    "min": "node_modules/.bin/minify --output dist/hyperr.pollbuilder.min.js src/hyperr.pollbuilder.js"
+  },
+  "devDependencies": {
+    "minifier": "^0.8.1"
+  }
 }

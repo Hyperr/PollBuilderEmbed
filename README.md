@@ -11,7 +11,7 @@ The full process of utilizing the Poll Builder includes a few steps. In their mo
 
 1. Set up a Poll Builder instance for usage with Hyperr. This will give the dimensions of your Poll Builder instance, and a token identifying it. This is done on the [Hyperr website](http://gethyperr.com) or via conversation with the Hyperr staff.
 2. Include the javascript file from this repo into your website.
-3. Call `hyperr.pollBuilder.embed(myContainer, myToken)` to embed.
+3. Call `pollBuilder.embed(myContainer, myToken)` to embed.
 4. Make desired elements draggable via the HTML5 DnD API.
 5. Add some data attributes to those draggable elements.
 
@@ -33,10 +33,10 @@ Currently this repo is not set up for use via npm or bower. Simply download the 
 
 Once you have the Poll Builder script in your project, you need to actually use it.
 
-If you simply included it into your project via a script tag, then you will find the object you need globally at `hyperr.pollBuilder`. Such as:
+If you simply included it into your project via a script tag, then you will find the object you need globally at `pollBuilder`. Such as:
 
 ```javascript
-hyperr.pollBuilder.embed(myContainer, myToken);
+pollBuilder.embed(myContainer, myToken);
 ```
 
 But it also can be used via CommonJS type usage if that is how your project is set up:
@@ -49,25 +49,23 @@ pollBuilder.embed(myContainer, myToken);
 And last but not least it also works with RequireJS if you are set up that way:
 
 ```javascript
-require(['hyperr.pollbuilder'], function(pollBuilder) {
+require(['pollbuilder'], function(pollBuilder) {
 	pollBuilder.embed(myContainer, myToken);
 });
 ```
 
-For instructional purposes we'll assume the global usage (`hyperr.pollBuilder`) for examples.
-
 ## Embedding
 
-Now that you've got the script, and have access to the `pollBuilder` object (whether it be the namespaced global `hyperr.pollBuilder` or via some dependency system) you can use it to embed a Poll Builder.
+Now that you've got the script, and have access to the `pollBuilder` object (whether it be the global `pollBuilder` or via some dependency system) you can use it to embed a Poll Builder.
 
 When you created your Poll Builder instance, you were given the dimensions at which it will show. So placing in your website is extremely easy:
 
 First: Build an element into your page of the proper size, where you want the Poll Builder to show. The only requirement on this is that it **not** be `position:static;` in the CSS. If you make it `static`, then the script will automatically change it to `relative`. Other than that, you're just building a rectangle where the embedding magic is gonna happen, and putting it where you want it.
 
-Second: Call the `hyperr.pollBuilder.embed` method while supplying 2 parameters (a reference to _or_ query string identifying the container element you intend it to embed into, and a string of the token for the Poll Builder instance. So that will look something like this:
+Second: Call the `pollBuilder.embed` method while supplying 2 parameters (a reference to _or_ query string identifying the container element you intend it to embed into, and a string of the token for the Poll Builder instance. So that will look something like this:
 
 ```javascript
-hyperr.pollBuilder.embed('#poll-builder-spot', 'YoUrToKeN');
+pollBuilder.embed('#poll-builder-spot', 'YoUrToKeN');
 ```
 
 Now you've embedded the Poll Builder instance. Next you just need to make some items draggable.
@@ -104,14 +102,14 @@ That image, when dragged into the Poll Builder, would have the Poll Builder show
 
 Some that are already familiar with the HTML5 Drag and Drop API may realize that it does not work for mobiles. This is true, and is a limitation of this tool. However, this script also allows for easy progressive enhancement.
 
-You can access a read-only property at `hyperr.pollBuilder.supported` which will be a boolean representing whether the Poll Builder will be supported on that particular user's browser/system. In this way you can do things like modify a CSS class to change the layout accordingly.
+You can use a method at `pollBuilder.isSupported()` which will return a boolean representing whether the Poll Builder will be supported on that particular user's browser/system. In this way you can do things like modify a CSS class to change the layout accordingly.
 
 An example of that would be the following:
 
 ```javascript
-if (hyperr.pollBuilder.supported) {
+if (pollBuilder.isSupported()) {
 	document.body.className += " using-pollbuilder";
-	hyperr.pollBuilder.embed('#poll-builder-spot', 'YoUrToKeN');
+	pollBuilder.embed('#poll-builder-spot', 'YoUrToKeN');
 }
 ```
 
