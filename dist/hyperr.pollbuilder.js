@@ -79,9 +79,9 @@
 	//import request from './request';
 	
 	
-	// TODO: get these on a CDN somewhere
-	var defaultImage = '/testing/assets/btn.png';
-	var defaultHover = '/testing/assets/btn-over.png';
+	// TODO: make these https
+	var defaultImage = 'http://cdn.gethyperr.com/image/upload/assets/ask_button.png';
+	var defaultHover = 'http://cdn.gethyperr.com/image/upload/assets/ask_button_over.png';
 	
 	var PollBuilder = function (_EventDispatcher) {
 		_inherits(PollBuilder, _EventDispatcher);

@@ -11,9 +11,9 @@ import {isSupported, def} from './utils';
 //import request from './request';
 import './Promise';
 
-// TODO: get these on a CDN somewhere
-var defaultImage = '/testing/assets/btn.png';
-var defaultHover = '/testing/assets/btn-over.png';
+// TODO: make these https
+var defaultImage = 'http://cdn.gethyperr.com/image/upload/assets/ask_button.png';
+var defaultHover = 'http://cdn.gethyperr.com/image/upload/assets/ask_button_over.png';
 
 class PollBuilder extends EventDispatcher
 {
