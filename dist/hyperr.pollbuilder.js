@@ -191,12 +191,12 @@
 				init.verticalPercent = (0, _utils.def)(init.verticalPercent, 0);
 				init.verticalOffset = (0, _utils.def)(init.verticalOffset, 10);
 				init.position = (0, _utils.def)(init.position, 'fixed');
-				init.zIndex = (0, _utils.def)(init.zIndex + '', '99');
-				init.buttonMarkup = (0, _utils.def)(init.buttonMarkup, null);
+				init.zIndex = (0, _utils.def)(init.zIndex, 99);
 				init.buttonImage = (0, _utils.def)(init.buttonImage, defaultImage);
 				init.buttonImageHover = (0, _utils.def)(init.buttonImageHover, defaultHover);
 				init.buttonImageActive = (0, _utils.def)(init.buttonImageActive, null);
 				init.buttonImages2x = (0, _utils.def)(init.buttonImages2x, false);
+				init.buttonMarkup = (0, _utils.def)(init.buttonMarkup, null);
 				init.buttonBottom = (0, _utils.def)(init.buttonBottom, false);
 				init.backgroundColor = (0, _utils.def)(init.backgroundColor, '#fff');
 	
@@ -210,7 +210,7 @@
 				cont.style.position = init.position;
 				cont.style.backgroundColor = init.backgroundColor;
 				cont.style[init.side] = '0px';
-				cont.style.zIndex = init.zIndex;
+				cont.style.zIndex = init.zIndex + '';
 				cont.style[init.fromTop ? 'top' : 'bottom'] = 'calc(' + init.verticalPercent + '% + ' + init.verticalOffset + 'px)';
 				cont.id = 'pollbuilder-sticky-' + index;
 				document.body.appendChild(cont);
