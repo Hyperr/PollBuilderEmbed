@@ -1,8 +1,7 @@
 {
   "name": "hyperr-pollbuilder",
-  "version": "2.0.0",
-  "description": "Embeddable Hypes in Your Website",
-  "main": "dist/hyperr.pollbuilder.min.js",
+  "version": "1.0.0",
+  "description": "Embeddable Polls in Your Website",
   "scripts": {
     "compile": "webpack && webpack --minimize"
   },

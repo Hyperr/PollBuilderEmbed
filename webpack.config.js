@@ -2,7 +2,7 @@
 var webpack = require('webpack');
 var minimize = process.argv.indexOf('--minimize') !== -1;
 
-module.exports = {
+var obj = {
 	
 	entry: './src/pollBuilder.js',
 	
@@ -28,8 +28,11 @@ module.exports = {
 		new webpack.optimize.UglifyJsPlugin({
 			compress: { warnings: false }
 		})
-	] : [],
-	
-	devtool: "source-map"
+	] : []
 	
 }
+
+if (!minimize)
+	obj.devtool = "source-map";
+
+module.exports = obj;

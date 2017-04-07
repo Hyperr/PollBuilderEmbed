@@ -247,10 +247,8 @@ THE SOFTWARE.
     Promise._unhandledRejectionFn = fn;
   };
   
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Promise;
-  } else if (!root.Promise) {
-    root.Promise = Promise;
-  }
+  // modified from original to act as actual polyfill instead of UMD
+  if (window && !window.Promise)
+	  window.Promise = Promise;
 
 })(this);

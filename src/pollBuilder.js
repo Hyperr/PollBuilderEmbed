@@ -8,7 +8,7 @@
  
 import EventDispatcher from './EventDispatcher';
 import {isSupported, def} from './utils';
-import request from './request';
+//import request from './request';
 import './Promise';
 
 // TODO: get these on a CDN somewhere
@@ -50,41 +50,53 @@ class PollBuilder extends EventDispatcher
 		
 		return new Promise((resolve, reject)=>
 		{
-			request('GET', `${pollBuilder._apiURL}/builders/${token}/dimensions`).then((response)=>
+			if (typeof cont === 'string')
+				cont = window.document.querySelector(cont);
+			
+			var style = window.getComputedStyle(cont);
+			if (style.getPropertyValue('position') === 'static') {
+				console.warn('Embed container must not be set to the CSS `position:static;`. It will be changed to relative.');
+				cont.style.position = 'relative';
+			}
+			
+			var index = iframes.length;
+			var id = `pollbuilder-iframe-${index}`;
+			var urlWVars = `${pollBuilder._pollBuilderURL}/${token}?pollBuilderID=${id}&pollBuilderIndex=${index}&scriptVersion=${pollBuilder.version}`;
+			
+			var iframeStyle = `border:none; outline:none; display:block;`;
+			var layoverStyle = `display:none; position:absolute; width:100%; height:100%; left:0; top:0;`;
+			var addHTML = `<iframe id="${id}" src="${urlWVars}" width="100%" height="100%" style="${iframeStyle}"></iframe><div class="iframe-layover" style="${layoverStyle}"></div>`;
+			
+			cont.innerHTML = addHTML;
+			cont.addEventListener('drop', drop, false);
+			cont.addEventListener('dragover', dragover, false);
+			cont.addEventListener('dragleave', dragleave, false);
+			var iframe = cont.querySelector('iframe');
+			iframes.push(iframe);
+			var dispatcher = new EventDispatcher();
+			dispatchers.push(dispatcher);
+			layovers.push(cont.querySelector('.iframe-layover'));
+			iframe.pollBuilderEventDispatcher = dispatcher;
+			dispatcher.iframe = iframe;
+			iframe.style.width = '0px';
+			iframe.style.height = '0px';
+			
+			var firstSize = true, height = 0;
+			dispatcher.addEventListener('pb:sizechange', function(evt)
 			{
-				if (typeof cont === 'string')
-					cont = window.document.querySelector(cont);
+				var newHeight = evt.data.height;
 				
-				var style = window.getComputedStyle(cont);
-				if (style.getPropertyValue('position') === 'static') {
-					console.warn('Embed container must not be set to the CSS `position:static;`. It will be changed to relative.');
-					cont.style.position = 'relative';
-				}
+				if (firstSize)
+					iframe.style.width = evt.data.width+'px'; // only need to set width first time
+				else
+					iframe.style.transition = 'height '+(newHeight<height?400:200)+'ms';
 				
-				var index = iframes.length;
-				var id = `pollbuilder-iframe-${index}`;
-				var urlWVars = `${pollBuilder._pollBuilderURL}/${token}?pollBuilderID=${id}&pollBuilderIndex=${index}&scriptVersion=${pollBuilder.version}`;
-				
-				var iframeStyle = `border:none; outline:none; display:block;`;
-				var layoverStyle = `display:none; position:absolute; width:100%; height:100%; left:0; top:0;`;
-				var addHTML = `<iframe id="${id}" src="${urlWVars}" width="100%" height="100%" style="${iframeStyle}"></iframe><div class="iframe-layover" style="${layoverStyle}"></div>`;
-				
-				cont.innerHTML = addHTML;
-				cont.addEventListener('drop', drop, false);
-				cont.addEventListener('dragover', dragover, false);
-				cont.addEventListener('dragleave', dragleave, false);
-				var iframe = cont.querySelector('iframe');
-				iframes.push(iframe);
-				var dispatcher = new EventDispatcher();
-				dispatchers.push(dispatcher);
-				layovers.push(cont.querySelector('.iframe-layover'));
-				iframe.pollBuilderEventDispatcher = dispatcher;
-				dispatcher.iframe = iframe;
-				iframe.style.width = response.width+'px';
-				iframe.style.height = response.height+'px';
-				
-				resolve(iframe);
-			})
+				iframe.style.height = height = newHeight+'px';
+				height = newHeight;
+				firstSize = false;
+			});
+			
+			resolve(iframe);
 		})
 	}
 	
@@ -97,13 +109,14 @@ class PollBuilder extends EventDispatcher
 		init.verticalPercent = def(init.verticalPercent, 0);
 		init.verticalOffset = def(init.verticalOffset, 10);
 		init.position = def(init.position, 'fixed');
-		init.zIndex = def(init.zIndex+'', '99');
-		init.buttonMarkup = def(init.buttonMarkup, null);
+		init.zIndex = def(init.zIndex, 99);
 		init.buttonImage = def(init.buttonImage, defaultImage);
 		init.buttonImageHover = def(init.buttonImageHover, defaultHover);
-		init.buttonCloseImage = def(init.buttonImage, defaultImage);
-		init.buttonCloseImageHover = def(init.buttonImageHover, defaultHover);
+		init.buttonImageActive = def(init.buttonImageActive, null);
+		init.buttonImages2x = def(init.buttonImages2x, false);
+		init.buttonMarkup = def(init.buttonMarkup, null);
 		init.buttonBottom = def(init.buttonBottom, false);
+		init.backgroundColor = def(init.backgroundColor, '#fff');
 		
 		init.buttonStyles = def(init.buttonStyles, 'box-shadow:0 2px 5px rgba(0,0,0,0.25);');
 		init.builderStyles = def(init.builderStyles, 'box-shadow:0 1px 5px rgba(0,0,0,0.25);');
@@ -113,8 +126,9 @@ class PollBuilder extends EventDispatcher
 		// create main container that holds it all
 		var cont = document.createElement('div');
 		cont.style.position = init.position;
+		cont.style.backgroundColor = init.backgroundColor;
 		cont.style[init.side] = '0px';
-		cont.style.zIndex = init.zIndex;
+		cont.style.zIndex = init.zIndex+'';
 		cont.style[init.fromTop ? 'top' : 'bottom'] = `calc(${init.verticalPercent}% + ${init.verticalOffset}px)`;
 		cont.id = 'pollbuilder-sticky-'+index;
 		document.body.appendChild(cont);
@@ -127,35 +141,67 @@ class PollBuilder extends EventDispatcher
 		setTimeout(function(){ pb.style.transition = 'width 400ms'; }, 0); // add on event loop so that it doesn't animate from load
 		cont.appendChild(pb);
 		
-		// create the container and contents of the poll builder button
-		var btn = document.createElement('div');
-		btn.style.cssText = init.builderStyles;
-		btn.className = 'poll-builder-button';
-		btn.style.position = 'absolute';
-		btn.style[init.side] = '100%';
-		btn.style.cursor = 'pointer';
-		btn.style[init.buttonBottom ? 'bottom' : 'top'] = '0';
-		btn.addEventListener('click', pollBuilder.toggleSticky.bind(null, index));
-		if (init.buttonMarkup) {
-			btn.innerHTML = init.buttonMarkup;
-		} else if (init.buttonImage && !init.buttonImageHover) {
-			btn.innerHTML = `<img src="${init.buttonImage}" style="display:block;"/>`;
-		} else if (init.buttonImage && init.buttonImageHover) {
-			btn.innerHTML = `<img src="${init.buttonImage}" style="display:block;"/><img style="display:block;position:absolute;left:0;top:0;opacity:0;transition:opacity 200ms;" onmouseover="this.style.opacity=1;" onmouseout="this.style.opacity=0;" src="${init.buttonImageHover}"/>`;
-		} else {
-			console.warn(`No button image or markup was given for the poll builder!`);
-		}
-		cont.appendChild(btn);
-		
 		// embed the poll builder where we want it...
 		var prom = pollBuilder.embed(pb, token);
 		prom.then(iframe=>
 		{
+			// we won't know the data width until the iframe randers and gives it to us via this event
+			iframe.pollBuilderEventDispatcher.addEventListener('pb:sizechange', firstSizeChange);
+			function firstSizeChange(evt)
+			{
+				// track the width needed for the builder
+				pb.setAttribute('data-width', evt.data.width);
+				
+				// create the container and contents of the poll builder button
+				var btn = document.createElement('div');
+				btn.style.cssText = init.builderStyles;
+				btn.className = 'poll-builder-button';
+				btn.style.position = 'absolute';
+				btn.style[init.side] = '100%';
+				btn.style.cursor = 'pointer';
+				btn.style[init.buttonBottom ? 'bottom' : 'top'] = '0';
+				btn.addEventListener('click', pollBuilder.toggleSticky.bind(null, index));
+				if (init.buttonMarkup) {
+					btn.innerHTML = init.buttonMarkup;
+				} else if (init.buttonImage) {
+					var attr2xMain = init.buttonImages2x ? 'onload="this.width/=2;this.style.opacity=1;"' : 'onload="this.style.opacity=1;';
+					var attr2x = init.buttonImages2x ? 'onload="this.width/=2"' : '';
+					btn.innerHTML = `<img src="${init.buttonImage}" ${attr2xMain}/>`;
+					
+					if (init.buttonImageHover)
+						btn.innerHTML += `<img src="${init.buttonImageHover}" class="poll-builder-button-hover" ${attr2x}/>`;
+					if (init.buttonImageActive)
+						btn.innerHTML += `<img src="${init.buttonImageActive}" class="poll-builder-button-active" ${attr2x}/>`;
+					
+					btn.innerHTML += `
+						<style>
+							.poll-builder-button img {
+								display:block;
+								transition:opacity 200ms;
+								opacity:0;
+							}
+							
+							.poll-builder-button img.poll-builder-button-hover,
+							.poll-builder-button img.poll-builder-button-active {
+								position:absolute;
+								left:0;
+								top:0;
+							}
+							
+							.poll-builder-button:hover img.poll-builder-button-hover { opacity:1; }
+							.poll-builder-button:active img.poll-builder-button-active { opacity:1; }
+						</style>`
+				} else {
+					console.warn(`No button image or markup was given for the poll builder!`);
+				}
+				cont.appendChild(btn);
+				
+				// remove listener
+				iframe.pollBuilderEventDispatcher.removeEventListener('pb:sizechange', firstSizeChange);
+			}
+			
 			// listen for a begindrag and open it
 			dispatchers[index].addEventListener('pb:begindrag', function(){ pollBuilder.maximizeSticky(index); });
-			
-			// track the width needed for the builder
-			pb.setAttribute('data-width', cont.offsetWidth);
 			
 			// now start out minimized
 			pollBuilder.minimizeSticky(index);
