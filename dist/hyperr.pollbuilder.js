@@ -284,6 +284,8 @@
 				var cont = document.getElementById('pollbuilder-sticky-' + index);
 				if (!cont) return;
 				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
+				var maxxed = pb.getAttribute('data-maximized') != false;
+				if (maxxed) iframes[index].contentWindow.postMessage({ event: 'stickyminimize' }, pollBuilder._targetOrigin);
 				pb.setAttribute('data-maximized', '0');
 				pb.style.width = '0px';
 			}
@@ -295,6 +297,8 @@
 				if (!cont) return;
 				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
 				var maxW = pb.getAttribute('data-width');
+				var maxxed = pb.getAttribute('data-maximized') != false;
+				if (!maxxed) iframes[index].contentWindow.postMessage({ event: 'stickymaximize' }, pollBuilder._targetOrigin);
 				pb.setAttribute('data-maximized', '1');
 				pb.style.width = maxW + 'px';
 			}
