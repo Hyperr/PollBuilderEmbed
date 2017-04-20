@@ -31,7 +31,7 @@ The embedding script is for handling the embedding of the Poll Builder in your w
 This repo is *intentionally* not set up for use via npm or bower. It must be loaded from the Hyperr CDN. The embedding script needs to be constantly up to date with the Poll Builder being embedded into your site, so it needs to be loaded remotely so that it can be kept up to date by Hyperr.
 
 ```html
-<script src="http://cdn.gethyperr.com/files/scripts/pollbuilder/desktop/latest.js"></script>
+<script src="https://scripts.gethyperr.com/desktop/latest.js"></script>
 ```
 
 #### Accessing:
