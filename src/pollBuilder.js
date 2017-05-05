@@ -11,22 +11,22 @@ import {isSupported, def} from './utils';
 //import request from './request';
 import './Promise';
 
-// TODO: make these https
-var defaultImage = 'http://cdn.gethyperr.com/image/upload/assets/ask_button.png';
-var defaultHover = 'http://cdn.gethyperr.com/image/upload/assets/ask_button_over.png';
+// the default button image for sticky builder if no others are given
+var defaultImage = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.png';
+var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.png';
 
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that poll-builder served from hyperr knows what script is in use
-	version = '1.0.0'
+	version = '1.0.1'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
 	
 	// private API, for setting the API and poll builder urls
 	_apiURL = 'https://api.gethyperr.com' // prefix domain for the API
-	_pollBuilderURL = 'http://pollbuilder.gethyperr.com' // prefix domain for the iframe
-	_targetOrigin = 'http://pollbuilder.gethyperr.com' // target domain you want to allow communication from
+	_pollBuilderURL = 'https://pollbuilder.gethyperr.com' // prefix domain for the iframe
+	_targetOrigin = 'https://pollbuilder.gethyperr.com' // target domain you want to allow communication from
 	
 	// requests for the poll builder to send a pb:data event with the raw state data, can use index/id/direct reference to choose iframe, otherwise uses 0
 	requestData(ident)
