@@ -164,7 +164,7 @@ class PollBuilder extends EventDispatcher
 				if (init.buttonMarkup) {
 					btn.innerHTML = init.buttonMarkup;
 				} else if (init.buttonImage) {
-					var attr2xMain = init.buttonImages2x ? 'onload="this.width/=2;this.style.opacity=1;"' : 'onload="this.style.opacity=1;';
+					var attr2xMain = init.buttonImages2x ? 'onload="this.width/=2;this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
 					var attr2x = init.buttonImages2x ? 'onload="this.width/=2"' : '';
 					btn.innerHTML = `<img src="${init.buttonImage}" ${attr2xMain}/>`;
 					
