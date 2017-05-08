@@ -80,8 +80,8 @@
 	
 	
 	// the default button image for sticky builder if no others are given
-	var defaultImage = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.png';
-	var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.png';
+	var defaultImage = 'http://res.cloudinary.com/hofetmrsh/image/upload/v1494262965/assets/ask_button.svg';
+	var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/v1494262965/assets/ask_button_over.svg';
 	
 	var PollBuilder = function (_EventDispatcher) {
 		_inherits(PollBuilder, _EventDispatcher);
