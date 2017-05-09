@@ -12,8 +12,8 @@ import {isSupported, def} from './utils';
 import './Promise';
 
 // the default button image for sticky builder if no others are given
-var defaultImage = 'http://res.cloudinary.com/hofetmrsh/image/upload/v1494262965/assets/ask_button.svg';
-var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/v1494262965/assets/ask_button_over.svg';
+var defaultImage = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
+var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
 
 class PollBuilder extends EventDispatcher
 {
