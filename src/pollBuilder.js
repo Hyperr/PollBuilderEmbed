@@ -18,7 +18,7 @@ var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that poll-builder served from hyperr knows what script is in use
-	version = '1.0.1'
+	version = '1.0.2'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
@@ -179,6 +179,10 @@ class PollBuilder extends EventDispatcher
 								display:block;
 								transition:opacity 200ms;
 								opacity:0;
+								max-width: none;
+								max-height: none;
+								width: auto;
+								height: auto;
 							}
 							
 							.poll-builder-button img.poll-builder-button-hover,
@@ -220,8 +224,8 @@ class PollBuilder extends EventDispatcher
 		if (!cont) return;
 		var pb = cont.getElementsByClassName('poll-builder-instance')[0];
 		var maxxed = pb.getAttribute('data-maximized') != false;
-		if (maxxed)
-			iframes[index].contentWindow.postMessage({event:'stickyminimize'}, pollBuilder._targetOrigin)
+		//if (maxxed) // shut off for now, cuz iframe isn't actually loaded yet on first load, so targetOrigin ends up erroring...only needed for analytics purposes anyway
+			//iframes[index].contentWindow.postMessage({event:'stickyminimize'}, pollBuilder._targetOrigin)
 		pb.setAttribute('data-maximized', '0');
 		pb.style.width = '0px';
 	}

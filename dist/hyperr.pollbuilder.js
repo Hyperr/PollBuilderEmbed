@@ -97,7 +97,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.1', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.2', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that poll-builder served from hyperr knows what script is in use
 	
@@ -253,7 +253,7 @@
 							if (init.buttonImageHover) btn.innerHTML += '<img src="' + init.buttonImageHover + '" class="poll-builder-button-hover" ' + attr2x + '/>';
 							if (init.buttonImageActive) btn.innerHTML += '<img src="' + init.buttonImageActive + '" class="poll-builder-button-active" ' + attr2x + '/>';
 	
-							btn.innerHTML += '\n\t\t\t\t\t\t<style>\n\t\t\t\t\t\t\t.poll-builder-button img {\n\t\t\t\t\t\t\t\tdisplay:block;\n\t\t\t\t\t\t\t\ttransition:opacity 200ms;\n\t\t\t\t\t\t\t\topacity:0;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-hover,\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-active {\n\t\t\t\t\t\t\t\tposition:absolute;\n\t\t\t\t\t\t\t\tleft:0;\n\t\t\t\t\t\t\t\ttop:0;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button:hover img.poll-builder-button-hover { opacity:1; }\n\t\t\t\t\t\t\t.poll-builder-button:active img.poll-builder-button-active { opacity:1; }\n\t\t\t\t\t\t</style>';
+							btn.innerHTML += '\n\t\t\t\t\t\t<style>\n\t\t\t\t\t\t\t.poll-builder-button img {\n\t\t\t\t\t\t\t\tdisplay:block;\n\t\t\t\t\t\t\t\ttransition:opacity 200ms;\n\t\t\t\t\t\t\t\topacity:0;\n\t\t\t\t\t\t\t\tmax-width: none;\n\t\t\t\t\t\t\t\tmax-height: none;\n\t\t\t\t\t\t\t\twidth: auto;\n\t\t\t\t\t\t\t\theight: auto;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-hover,\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-active {\n\t\t\t\t\t\t\t\tposition:absolute;\n\t\t\t\t\t\t\t\tleft:0;\n\t\t\t\t\t\t\t\ttop:0;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button:hover img.poll-builder-button-hover { opacity:1; }\n\t\t\t\t\t\t\t.poll-builder-button:active img.poll-builder-button-active { opacity:1; }\n\t\t\t\t\t\t</style>';
 						} else {
 							console.warn('No button image or markup was given for the poll builder!');
 						}
@@ -285,7 +285,8 @@
 				if (!cont) return;
 				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
 				var maxxed = pb.getAttribute('data-maximized') != false;
-				if (maxxed) iframes[index].contentWindow.postMessage({ event: 'stickyminimize' }, pollBuilder._targetOrigin);
+				//if (maxxed) // shut off for now, cuz iframe isn't actually loaded yet on first load, so targetOrigin ends up erroring...only needed for analytics purposes anyway
+				//iframes[index].contentWindow.postMessage({event:'stickyminimize'}, pollBuilder._targetOrigin)
 				pb.setAttribute('data-maximized', '0');
 				pb.style.width = '0px';
 			}
