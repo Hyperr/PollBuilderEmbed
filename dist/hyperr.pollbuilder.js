@@ -80,8 +80,8 @@
 	
 	
 	// the default button image for sticky builder if no others are given
-	var defaultImage = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
-	var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
+	var defaultImage = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
+	var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
 	
 	var PollBuilder = function (_EventDispatcher) {
 		_inherits(PollBuilder, _EventDispatcher);
@@ -97,7 +97,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.2', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.3', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that poll-builder served from hyperr knows what script is in use
 	

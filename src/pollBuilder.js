@@ -12,13 +12,13 @@ import {isSupported, def} from './utils';
 import './Promise';
 
 // the default button image for sticky builder if no others are given
-var defaultImage = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
-var defaultHover = 'http://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
+var defaultImage = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
+var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
 
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that poll-builder served from hyperr knows what script is in use
-	version = '1.0.2'
+	version = '1.0.3'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
