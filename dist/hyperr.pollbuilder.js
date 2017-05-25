@@ -60,7 +60,11 @@
 	
 	var _utils = __webpack_require__(2);
 	
-	__webpack_require__(3);
+	var _UtilsClass = __webpack_require__(3);
+	
+	var _UtilsClass2 = _interopRequireDefault(_UtilsClass);
+	
+	__webpack_require__(4);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -97,7 +101,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.3', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.4', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that poll-builder served from hyperr knows what script is in use
 	
@@ -108,11 +112,14 @@
 		// private API, for setting the API and poll builder urls
 		// prefix domain for the API
 		// prefix domain for the iframe
+		// target domain you want to allow communication from
+	
+		// utility functions that the pollBuilder needs or provides
 	
 	
 		_createClass(PollBuilder, [{
 			key: 'requestData',
-			// target domain you want to allow communication from
+	
 	
 			// requests for the poll builder to send a pb:data event with the raw state data, can use index/id/direct reference to choose iframe, otherwise uses 0
 			value: function requestData(ident) {
@@ -246,8 +253,8 @@
 						if (init.buttonMarkup) {
 							btn.innerHTML = init.buttonMarkup;
 						} else if (init.buttonImage) {
-							var attr2xMain = init.buttonImages2x ? 'onload="this.width/=2;this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
-							var attr2x = init.buttonImages2x ? 'onload="this.width/=2"' : '';
+							var attr2xMain = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
+							var attr2x = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);"' : '';
 							btn.innerHTML = '<img src="' + init.buttonImage + '" ' + attr2xMain + '/>';
 	
 							if (init.buttonImageHover) btn.innerHTML += '<img src="' + init.buttonImageHover + '" class="poll-builder-button-hover" ' + attr2x + '/>';
@@ -553,6 +560,39 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Utils = function () {
+		function Utils() {
+			_classCallCheck(this, Utils);
+		}
+	
+		_createClass(Utils, null, [{
+			key: "halfenImage",
+	
+			// used onload to halfen images that are double size for retina
+			value: function halfenImage(img) {
+				img.style.width = img.width / 2 + "px";
+			}
+		}]);
+	
+		return Utils;
+	}();
+	
+	exports.default = Utils;
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {'use strict';
@@ -812,10 +852,10 @@
 	  // modified from original to act as actual polyfill instead of UMD
 	  if (window && !window.Promise) window.Promise = Promise;
 	})(undefined);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate))
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -868,12 +908,12 @@
 	};
 	
 	// setimmediate attaches itself to the global object
-	__webpack_require__(5);
+	__webpack_require__(6);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {"use strict";
@@ -1060,10 +1100,10 @@
 	    attachTo.setImmediate = setImmediate;
 	    attachTo.clearImmediate = clearImmediate;
 	})(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(6)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(7)))
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';

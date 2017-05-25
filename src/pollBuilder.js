@@ -8,6 +8,7 @@
  
 import EventDispatcher from './EventDispatcher';
 import {isSupported, def} from './utils';
+import Utils from './UtilsClass'
 //import request from './request';
 import './Promise';
 
@@ -18,7 +19,7 @@ var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that poll-builder served from hyperr knows what script is in use
-	version = '1.0.3'
+	version = '1.0.4'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
@@ -27,6 +28,9 @@ class PollBuilder extends EventDispatcher
 	_apiURL = 'https://api.gethyperr.com' // prefix domain for the API
 	_pollBuilderURL = 'https://pollbuilder.gethyperr.com' // prefix domain for the iframe
 	_targetOrigin = 'https://pollbuilder.gethyperr.com' // target domain you want to allow communication from
+	
+	// utility functions that the pollBuilder needs or provides
+	utils = Utils
 	
 	// requests for the poll builder to send a pb:data event with the raw state data, can use index/id/direct reference to choose iframe, otherwise uses 0
 	requestData(ident)
@@ -164,8 +168,8 @@ class PollBuilder extends EventDispatcher
 				if (init.buttonMarkup) {
 					btn.innerHTML = init.buttonMarkup;
 				} else if (init.buttonImage) {
-					var attr2xMain = init.buttonImages2x ? 'onload="this.width/=2;this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
-					var attr2x = init.buttonImages2x ? 'onload="this.width/=2"' : '';
+					var attr2xMain = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
+					var attr2x = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);"' : '';
 					btn.innerHTML = `<img src="${init.buttonImage}" ${attr2xMain}/>`;
 					
 					if (init.buttonImageHover)
@@ -381,3 +385,4 @@ window.addEventListener("message", function(obj)
 		pollBuilder.dispatchEvent(event);
 	}
 })
+
