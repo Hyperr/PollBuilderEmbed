@@ -107,47 +107,52 @@ That would look something like this on an element:
 
 ## Progressive Enhancement
 
-Some that are already familiar with the HTML5 Drag and Drop API may realize that it does not work for mobiles. This is true. However, this script also allows for easy progressive enhancement.
+This script supports all popular modern browsers including IE11 and Edge. It does not support IE10 or below. The script will automatically detect supported browsers and not complete the embed unless supported. So you do not need to worry about that.
 
-You can use a method at `pollBuilder.isSupported()` which will return true/false representing whether the Poll Builder will be supported on that particular user's browser/system. In this way you can do things like modify a CSS class to change the layout accordingly, and/or only embed the Poll Builder when supported.
+However, you can use a method at `pollBuilder.isSupported()` which will return true/false representing whether the Poll Builder will be supported on that particular user's browser/system. In this way you can do things like modify a CSS class or change some JS in your site depending on whether the builder will embed. 
 
 An example of that would be the following:
 
 ```javascript
 if (pollBuilder.isSupported()) {
 	document.body.className += " using-pollbuilder";
-	pollBuilder.embed('#poll-builder-spot', 'YoUrToKeN');
+	usingPollBuilder = true;
 }
 ```
 
-Which would then allow very simple CSS to only account for the poll builder if it will truly run:
+## Non-Drag and Drop Support
 
-```css
-#poll-builder-spot {
-	display: none;
-}
+The HTML5 drag and drop API is not friendly to most mobile devices. In addition you may want a button-based method of adding to the poll builder anyway.
 
-.using-pollbuilder #poll-builder-spot {
-	display: block;
-	width: 180px;
-	height 500px;
-	/* ...etc. */
-}
+The Poll Builder supports this by allowing you to create any type of button you wish to use for adding. You add the same `data-poll-builder` attribute that you add to the draggable items to that button, then include a selector string pointing to your buttons at embed time using the `addButtons` property on your options object. There is also a shortcut that if you are using no other options you may just give that selector string alone in the place of the options object, and it will use it as the `addButtons` property.
+
+```html
+<!-- Make an adding buttons for non DnD usage (note: the buttons can be any HTML element). -->
+<button class="adding-btn" data-poll-builder='{"image":"http://mysite.com/assets/img1.jpg", "link":"http://mysite.com/item_one"}'>ADD</button>
+
+<!-- Your embed code then may look like this -->
+<script>
+pollBuilder.embedSticky('YoUrToKeN', {addButtons:'.adding-btn'});
+</script>
 ```
 
-This also means that you're only progressively enhancing for people that have javascript turned on as well (since the Poll Builder cannot run without javascript). Therefore this is the recommended approach.
+In the above example, the shortcut method when using no other options means that this would be identical in function:
+
+```javascript
+pollBuilder.embedSticky('YoUrToKeN', '.adding-btn');
+```
 
 ## Events
 
-The poll builder has events that you can use for things such as analytics. These events dispatch from the `pollBuilder` object itself.
+The poll builder has events that you can use for various operations. These events dispatch from the `pollBuilder` object itself.
 
 You may listen/stop listening to events using either `addEventListener` and `removeEventListener`.
 
 So an example would be:
 
 ```javascript
-pollBuilder.addEventListener('pb:drop', function(evt) {
-	console.log(evt.data); // <-- will log out data from item dropped into builder
+pollBuilder.addEventListener('pb:init', function(evt) {
+	console.log('Poll Builder embedded!'); // <-- will log when/if the Poll Builder embeds
 })
 ```
 

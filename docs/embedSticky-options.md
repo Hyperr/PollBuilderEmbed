@@ -1,6 +1,8 @@
 
 ## Sticky Embed Options
 
+NOTE: needs updating
+
 The sticky version of the Poll Builder, as embedded via `pollBuilder.embedSticky` allows an object of options. This is a list of usable properties to have on that object:
 
 #### side

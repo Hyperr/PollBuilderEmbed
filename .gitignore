@@ -4,3 +4,4 @@
 *.nogit.txt
 npm-debug.log
 node_modules/
+.env

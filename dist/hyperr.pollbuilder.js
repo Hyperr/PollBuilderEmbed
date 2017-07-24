@@ -60,11 +60,19 @@
 	
 	var _utils = __webpack_require__(2);
 	
-	var _UtilsClass = __webpack_require__(3);
+	var _UtilsClass = __webpack_require__(4);
 	
 	var _UtilsClass2 = _interopRequireDefault(_UtilsClass);
 	
-	__webpack_require__(4);
+	var _Builder = __webpack_require__(5);
+	
+	var _Builder2 = _interopRequireDefault(_Builder);
+	
+	var _StickyBuilder = __webpack_require__(7);
+	
+	var _StickyBuilder2 = _interopRequireDefault(_StickyBuilder);
+	
+	__webpack_require__(9);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -80,13 +88,6 @@
 	 * Proprietary and Confidential
 	 *******************************************************/
 	
-	//import request from './request';
-	
-	
-	// the default button image for sticky builder if no others are given
-	var defaultImage = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button.svg';
-	var defaultHover = 'https://res.cloudinary.com/hofetmrsh/image/upload/assets/ask_button_over.svg';
-	
 	var PollBuilder = function (_EventDispatcher) {
 		_inherits(PollBuilder, _EventDispatcher);
 	
@@ -101,90 +102,53 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '1.0.4', _this.isSupported = _utils.isSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
-		// version is important so that poll-builder served from hyperr knows what script is in use
+		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
 	
 		// whether or not this component is supported
 	
 	
-		// private API, for setting the API and poll builder urls
+		// whether or not the drag and drop usage is supported
+	
+	
+		// private API, for setting the API and poll builder urls and other stuff
 		// prefix domain for the API
 		// prefix domain for the iframe
-		// target domain you want to allow communication from
-	
-		// utility functions that the pollBuilder needs or provides
 	
 	
 		_createClass(PollBuilder, [{
+			key: '_iframeLoaded',
+			// target domain you want to allow communication from
+			value: function _iframeLoaded(ind) {
+				_Builder2.default.setLoaded(ind);
+			}
+	
+			// utility functions that the pollBuilder needs or provides
+	
+		}, {
 			key: 'requestData',
 	
 	
-			// requests for the poll builder to send a pb:data event with the raw state data, can use index/id/direct reference to choose iframe, otherwise uses 0
-			value: function requestData(ident) {
-				ident = ident || 0;
+			// requests for the poll builder to send a pb:data event with the raw state data, can use index to choose iframe, otherwise uses 0
+			value: function requestData() {
+				var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 	
-				var iframe = ident;
-				if (typeof ident === 'number') iframe = iframes[ident];
-				if (typeof ident === 'string') iframe = document.querySelector(ident);
-	
+				var iframe = this.instances[index].iframe;
 				iframe.contentWindow.postMessage({ event: 'requestdata' }, pollBuilder._targetOrigin);
 			}
 	
-			// used to actually embed a poll builder in an element when manually used (i.e. no sticky)
+			// Array of instances for the poll builder, automatically kept up by the Builder class
 	
 		}, {
 			key: 'embed',
-			value: function embed(cont, token) {
-				if (!pollBuilder.isSupported()) console.warn("This browser/device is not capable of using hyperr poll builder with drag and drop. You can use `pollBuilder.isSupported()` to determine this at runtime.");
 	
-				return new Promise(function (resolve, reject) {
-					if (typeof cont === 'string') cont = window.document.querySelector(cont);
 	
-					var style = window.getComputedStyle(cont);
-					if (style.getPropertyValue('position') === 'static') {
-						console.warn('Embed container must not be set to the CSS `position:static;`. It will be changed to relative.');
-						cont.style.position = 'relative';
-					}
-	
-					var index = iframes.length;
-					var id = 'pollbuilder-iframe-' + index;
-					var urlWVars = pollBuilder._pollBuilderURL + '/' + token + '?pollBuilderID=' + id + '&pollBuilderIndex=' + index + '&scriptVersion=' + pollBuilder.version;
-	
-					var iframeStyle = 'border:none; outline:none; display:block;';
-					var layoverStyle = 'display:none; position:absolute; width:100%; height:100%; left:0; top:0;';
-					var addHTML = '<iframe id="' + id + '" src="' + urlWVars + '" width="100%" height="100%" style="' + iframeStyle + '"></iframe><div class="iframe-layover" style="' + layoverStyle + '"></div>';
-	
-					cont.innerHTML = addHTML;
-					cont.addEventListener('drop', drop, false);
-					cont.addEventListener('dragover', dragover, false);
-					cont.addEventListener('dragleave', dragleave, false);
-					var iframe = cont.querySelector('iframe');
-					iframes.push(iframe);
-					var dispatcher = new _EventDispatcher3.default();
-					dispatchers.push(dispatcher);
-					layovers.push(cont.querySelector('.iframe-layover'));
-					iframe.pollBuilderEventDispatcher = dispatcher;
-					dispatcher.iframe = iframe;
-					iframe.style.width = '0px';
-					iframe.style.height = '0px';
-	
-					var firstSize = true,
-					    height = 0;
-					dispatcher.addEventListener('pb:sizechange', function (evt) {
-						var newHeight = evt.data.height;
-	
-						if (firstSize) iframe.style.width = evt.data.width + 'px'; // only need to set width first time
-						else iframe.style.transition = 'height ' + (newHeight < height ? 400 : 200) + 'ms';
-	
-						iframe.style.height = height = newHeight + 'px';
-						height = newHeight;
-						firstSize = false;
-					});
-	
-					resolve(iframe);
-				});
+			// used to actually embed a poll builder in an element when manually used (i.e. no sticky)
+			value: function embed(cont, token, opts) {
+				var inst = new _Builder2.default(cont, token, opts);
+				return inst.promise;
 			}
 	
 			// an easier way to use, creates a sticky version with certain data
@@ -192,133 +156,40 @@
 		}, {
 			key: 'embedSticky',
 			value: function embedSticky(token, init) {
-				init = init || {};
-				init.side = (0, _utils.def)(init.side, 'right');
-				init.fromTop = (0, _utils.def)(init.fromTop, false);
-				init.verticalPercent = (0, _utils.def)(init.verticalPercent, 0);
-				init.verticalOffset = (0, _utils.def)(init.verticalOffset, 10);
-				init.position = (0, _utils.def)(init.position, 'fixed');
-				init.zIndex = (0, _utils.def)(init.zIndex, 99);
-				init.buttonImage = (0, _utils.def)(init.buttonImage, defaultImage);
-				init.buttonImageHover = (0, _utils.def)(init.buttonImageHover, defaultHover);
-				init.buttonImageActive = (0, _utils.def)(init.buttonImageActive, null);
-				init.buttonImages2x = (0, _utils.def)(init.buttonImages2x, false);
-				init.buttonMarkup = (0, _utils.def)(init.buttonMarkup, null);
-				init.buttonBottom = (0, _utils.def)(init.buttonBottom, false);
-				init.backgroundColor = (0, _utils.def)(init.backgroundColor, '#fff');
-	
-				init.buttonStyles = (0, _utils.def)(init.buttonStyles, 'box-shadow:0 2px 5px rgba(0,0,0,0.25);');
-				init.builderStyles = (0, _utils.def)(init.builderStyles, 'box-shadow:0 1px 5px rgba(0,0,0,0.25);');
-	
-				var index = iframes.length;
-	
-				// create main container that holds it all
-				var cont = document.createElement('div');
-				cont.style.position = init.position;
-				cont.style.backgroundColor = init.backgroundColor;
-				cont.style[init.side] = '0px';
-				cont.style.zIndex = init.zIndex + '';
-				cont.style[init.fromTop ? 'top' : 'bottom'] = 'calc(' + init.verticalPercent + '% + ' + init.verticalOffset + 'px)';
-				cont.id = 'pollbuilder-sticky-' + index;
-				document.body.appendChild(cont);
-	
-				// create the container that holds the poll builder part
-				var pb = document.createElement('div');
-				pb.style.cssText = init.buttonStyles;
-				pb.className = 'poll-builder-instance';
-				pb.style.overflow = 'hidden';
-				setTimeout(function () {
-					pb.style.transition = 'width 400ms';
-				}, 0); // add on event loop so that it doesn't animate from load
-				cont.appendChild(pb);
-	
-				// embed the poll builder where we want it...
-				var prom = pollBuilder.embed(pb, token);
-				prom.then(function (iframe) {
-					// we won't know the data width until the iframe randers and gives it to us via this event
-					iframe.pollBuilderEventDispatcher.addEventListener('pb:sizechange', firstSizeChange);
-					function firstSizeChange(evt) {
-						// track the width needed for the builder
-						pb.setAttribute('data-width', evt.data.width);
-	
-						// create the container and contents of the poll builder button
-						var btn = document.createElement('div');
-						btn.style.cssText = init.builderStyles;
-						btn.className = 'poll-builder-button';
-						btn.style.position = 'absolute';
-						btn.style[init.side] = '100%';
-						btn.style.cursor = 'pointer';
-						btn.style[init.buttonBottom ? 'bottom' : 'top'] = '0';
-						btn.addEventListener('click', pollBuilder.toggleSticky.bind(null, index));
-						if (init.buttonMarkup) {
-							btn.innerHTML = init.buttonMarkup;
-						} else if (init.buttonImage) {
-							var attr2xMain = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
-							var attr2x = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);"' : '';
-							btn.innerHTML = '<img src="' + init.buttonImage + '" ' + attr2xMain + '/>';
-	
-							if (init.buttonImageHover) btn.innerHTML += '<img src="' + init.buttonImageHover + '" class="poll-builder-button-hover" ' + attr2x + '/>';
-							if (init.buttonImageActive) btn.innerHTML += '<img src="' + init.buttonImageActive + '" class="poll-builder-button-active" ' + attr2x + '/>';
-	
-							btn.innerHTML += '\n\t\t\t\t\t\t<style>\n\t\t\t\t\t\t\t.poll-builder-button img {\n\t\t\t\t\t\t\t\tdisplay:block;\n\t\t\t\t\t\t\t\ttransition:opacity 200ms;\n\t\t\t\t\t\t\t\topacity:0;\n\t\t\t\t\t\t\t\tmax-width: none;\n\t\t\t\t\t\t\t\tmax-height: none;\n\t\t\t\t\t\t\t\twidth: auto;\n\t\t\t\t\t\t\t\theight: auto;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-hover,\n\t\t\t\t\t\t\t.poll-builder-button img.poll-builder-button-active {\n\t\t\t\t\t\t\t\tposition:absolute;\n\t\t\t\t\t\t\t\tleft:0;\n\t\t\t\t\t\t\t\ttop:0;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t.poll-builder-button:hover img.poll-builder-button-hover { opacity:1; }\n\t\t\t\t\t\t\t.poll-builder-button:active img.poll-builder-button-active { opacity:1; }\n\t\t\t\t\t\t</style>';
-						} else {
-							console.warn('No button image or markup was given for the poll builder!');
-						}
-						cont.appendChild(btn);
-	
-						// remove listener
-						iframe.pollBuilderEventDispatcher.removeEventListener('pb:sizechange', firstSizeChange);
-					}
-	
-					// listen for a begindrag and open it
-					dispatchers[index].addEventListener('pb:begindrag', function () {
-						pollBuilder.maximizeSticky(index);
-					});
-	
-					// now start out minimized
-					pollBuilder.minimizeSticky(index);
-	
-					// float it to one side depending on the side it's on, cuz it makes it animate better
-					iframe.style.float = init.side === 'right' ? 'left' : 'right';
-				});
-	
-				return prom;
+				var inst = new _StickyBuilder2.default(token, init);
+				return inst.promise;
 			}
 		}, {
 			key: 'minimizeSticky',
-			value: function minimizeSticky(index) {
-				index = index || 0;
-				var cont = document.getElementById('pollbuilder-sticky-' + index);
-				if (!cont) return;
-				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
-				var maxxed = pb.getAttribute('data-maximized') != false;
-				//if (maxxed) // shut off for now, cuz iframe isn't actually loaded yet on first load, so targetOrigin ends up erroring...only needed for analytics purposes anyway
-				//iframes[index].contentWindow.postMessage({event:'stickyminimize'}, pollBuilder._targetOrigin)
-				pb.setAttribute('data-maximized', '0');
-				pb.style.width = '0px';
+			value: function minimizeSticky() {
+				var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	
+				var inst = _Builder2.default.instances[index];
+				inst.minimize();
 			}
 		}, {
 			key: 'maximizeSticky',
-			value: function maximizeSticky(index) {
-				index = index || 0;
-				var cont = document.getElementById('pollbuilder-sticky-' + index);
-				if (!cont) return;
-				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
-				var maxW = pb.getAttribute('data-width');
-				var maxxed = pb.getAttribute('data-maximized') != false;
-				if (!maxxed) iframes[index].contentWindow.postMessage({ event: 'stickymaximize' }, pollBuilder._targetOrigin);
-				pb.setAttribute('data-maximized', '1');
-				pb.style.width = maxW + 'px';
+			value: function maximizeSticky() {
+				var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	
+				var inst = _Builder2.default.instances[index];
+				inst.maximize();
 			}
 		}, {
 			key: 'toggleSticky',
-			value: function toggleSticky(index) {
-				index = index || 0;
-				var cont = document.getElementById('pollbuilder-sticky-' + index);
-				if (!cont) return;
-				var pb = cont.getElementsByClassName('poll-builder-instance')[0];
-				var maxxed = pb.getAttribute('data-maximized') != false;
-				if (maxxed) pollBuilder.minimizeSticky(index);else pollBuilder.maximizeSticky(index);
+			value: function toggleSticky() {
+				var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	
+				var inst = _Builder2.default.instances[index];
+				inst.toggle();
+			}
+		}, {
+			key: 'addButtons',
+			value: function addButtons(queryStr) {
+				var list = document.querySelectorAll(queryStr);
+				for (var i = 0, ii = list.length; i < ii; i++) {
+					list[i].addEventListener('click', _Builder2.default.buttonAdd);
+				}
 			}
 		}]);
 	
@@ -333,90 +204,10 @@
 	
 	window.pollBuilder = pollBuilder;
 	
-	// need to keep a list of droppable iframes and their layovers in order to shut them off whenever dragging
-	var iframes = [];
-	var layovers = [];
-	var dispatchers = pollBuilder.dispatchers = [];
-	var hypeDragData = false;
+	// ------------------- need to listen to all dragging events to pass them to builders ----------------------
 	
-	// ---------- the events/functions for the dropzone ---------
-	
-	function drop(evt) {
-		if (!hypeDragData) return;
-	
-		try {
-			hypeDragData = JSON.parse(hypeDragData);
-		} catch (e) {}
-	
-		var target = evt.currentTarget.querySelector('iframe');
-		target.contentWindow.postMessage({ event: 'drop', data: hypeDragData }, pollBuilder._targetOrigin);
-	
-		evt.stopPropagation();
-		evt.preventDefault();
-	}
-	
-	function dragover(evt) {
-		if (!hypeDragData) return;
-	
-		var target = evt.currentTarget.querySelector('iframe');
-		target.contentWindow.postMessage({ event: 'dragover' }, pollBuilder._targetOrigin);
-	
-		evt.preventDefault();
-		return false;
-	}
-	
-	function dragleave(evt) {
-		if (!hypeDragData) return;
-	
-		var target = evt.currentTarget.querySelector('iframe');
-		target.contentWindow.postMessage({ event: 'dragleave' }, pollBuilder._targetOrigin);
-	
-		evt.preventDefault();
-		return false;
-	}
-	
-	// ------------------- generic drag starting/stopping to turn on/off iframes ----------------------
-	
-	function dragstart(evt) {
-		if (!evt || !evt.target || !evt.target.hasAttribute || !evt.target.hasAttribute('data-poll-builder')) return;
-	
-		var data = evt.target.getAttribute('data-poll-builder');
-	
-		if (data) {
-			hypeDragData = data;
-	
-			if (evt.dataTransfer && evt.dataTransfer.setData) evt.dataTransfer.setData('text', data); // firefox needs dataTransfer data to work, but we don't actually use it
-	
-			var i = iframes.length;
-			while (i--) {
-				iframes[i].style.pointerEvents = 'none';
-				layovers[i].style.display = 'block';
-				iframes[i].contentWindow.postMessage({ event: 'dragstart' }, pollBuilder._targetOrigin);
-			}
-	
-			pollBuilder.dispatchEvent({ type: 'pb:begindrag' });
-			var j = dispatchers.length;
-			while (j--) {
-				dispatchers[j].dispatchEvent({ type: 'pb:begindrag' });
-			}
-		}
-	}
-	
-	function dragend(evt) {
-		if (hypeDragData) {
-			hypeDragData = false;
-	
-			var i = iframes.length;
-			while (i--) {
-				iframes[i].style.pointerEvents = 'auto';
-				layovers[i].style.display = 'none';
-				iframes[i].contentWindow.postMessage({ event: 'dragend' }, pollBuilder._targetOrigin);
-			}
-		}
-	}
-	
-	window.document.addEventListener('dragstart', dragstart, false);
-	window.document.addEventListener('dragend', dragend, false);
+	window.document.addEventListener('dragstart', _Builder2.default.dragStart, false);
+	window.document.addEventListener('dragend', _Builder2.default.dragEnd, false);
 	
 	// ------------- deal with events from poll builder ------------
 	
@@ -432,9 +223,9 @@
 		// if is flagged as an event, then dispatch it
 		if (obj.data.isEvent) {
 			var event = obj.data.event;
-			var dispatcher = dispatchers[event.index];
+			var index = event.index;
 			delete event.index; // user doesn't need this, will only be possibly confused
-			dispatcher.dispatchEvent(event);
+			pollBuilder.instances[index].dispatchEvent(event);
 			pollBuilder.dispatchEvent(event);
 		}
 	});
@@ -501,25 +292,52 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 	exports.def = def;
 	exports.isSupported = isSupported;
+	exports.dragAndDropSupported = dragAndDropSupported;
+	exports.shouldEmbedMobile = shouldEmbedMobile;
+	
+	var _Platform = __webpack_require__(3);
+	
+	var _Platform2 = _interopRequireDefault(_Platform);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function def(val, dflt) {
 		return typeof val === 'undefined' ? dflt : val;
 	}
 	
 	function isSupported() {
+		var ie = getIEVersion();
+	
+		if (ie && ie < 10) return false;
+	
+		return true;
+	}
+	
+	function dragAndDropSupported() {
 		var hasDraggable = "draggable" in document.createElement("div");
 		var isKnownMobile = /Mobile|Android|Slick\/|Kindle|BlackBerry|Opera Mini|Opera Mobi/i.test(navigator.userAgent);
 		var hasEvents = isEventSupported('dragstart') && isEventSupported('drop');
 	
 		return hasDraggable && hasEvents && !isKnownMobile;
+	}
+	
+	function shouldEmbedMobile() {
+		return _Platform2.default.mobile;
+	}
+	
+	function getIEVersion() // Note: undefined for IE Edge
+	{
+		var match = navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
+		return match ? parseInt(match[1]) : undefined;
 	}
 	
 	// isEventSupported code derived from https://github.com/kangax/iseventsupported
@@ -568,6 +386,63 @@
 		value: true
 	});
 	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	/*
+		This script is not open source. It is a proprietary script not to be reused or redistributed.
+	*/
+	
+	var Platform = function Platform() {
+		_classCallCheck(this, Platform);
+	
+		this.desktop = false;
+		this.mobile = false;
+		this.phone = false;
+		this.tablet = false;
+		this.android = false;
+		this.ios = false;
+		this.blackberry = false;
+		this.winmobile = false;
+	} // true if phone OR tablet
+	;
+	
+	// ----------- setup ------------
+	
+	exports.default = Platform;
+	var os = navigator.platform.toLowerCase(),
+	    ua = navigator.userAgent.toLowerCase();
+	var easyregex = /mobi(le)?|tablet|phone|palm|pocket|handheld|e?book|reader|ip(ad|od|hone)|android|blackberry|playbook|webos|windows ce/;
+	var osregex = /linux|unix|^win|^mac/;
+	var isIE = !!navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
+	
+	// figure out mobile vs desktop
+	if (!isIE && (easyregex.test(os) || easyregex.test(ua))) {
+		Platform.mobile = true;
+	} else if (osregex.test(os)) {
+		Platform.desktop = true;
+	} else {
+		Platform.mobile = true; // assume mobile if unknown
+	}
+	
+	// if mobile, try to determine type
+	if (Platform.mobile) {
+		// figure out OS if we can
+		if (/android/.test(ua)) Platform.android = true;else if (/ip(ad|od|hone)/.test(ua)) Platform.ios = true;else if (/blackberry|playbook/.test(ua)) Platform.blackberry = true;else if (/windows/.test(ua)) Platform.winmobile = true;
+	
+		// determine tablet vs phone
+		if (/tablet|ipad|playbook/.test(ua)) Platform.tablet = true;else if (/phone/.test(ua)) Platform.phone = true;else Platform.phone = true; // default to phone if unknown
+	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -592,7 +467,624 @@
 	exports.default = Utils;
 
 /***/ },
-/* 4 */
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _EventDispatcher2 = __webpack_require__(1);
+	
+	var _EventDispatcher3 = _interopRequireDefault(_EventDispatcher2);
+	
+	var _request = __webpack_require__(6);
+	
+	var _request2 = _interopRequireDefault(_request);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Builder = function (_EventDispatcher) {
+		_inherits(Builder, _EventDispatcher);
+	
+		_createClass(Builder, null, [{
+			key: 'dragStart',
+			value: function dragStart(evt) {
+				Builder.instances.map(function (inst) {
+					return inst._dragstart(evt);
+				});
+				pollBuilder.dispatchEvent({ type: 'pb:begindrag' });
+			}
+			// STATIC PUBLIC -----------------------------------------------------------
+	
+		}, {
+			key: 'dragEnd',
+			value: function dragEnd(evt) {
+				Builder.instances.map(function (inst) {
+					return inst._dragend(evt);
+				});
+				pollBuilder.dispatchEvent({ type: 'pb:enddrag' });
+			}
+		}, {
+			key: 'buttonAdd',
+			value: function buttonAdd(evt) {
+				var btn = evt.currentTarget;
+				var index = parseInt(btn.getAttribute('data-poll-builder-index')) || 0;
+				Builder.instances[index]._buttonadd(btn);
+			}
+		}, {
+			key: 'setLoaded',
+			value: function setLoaded(index) {
+				Builder.instances[index].loaded = true;
+			}
+	
+			// PUBLIC -----------------------------------------------------------
+	
+			// containing element it's being embedded in
+			// the iframe element itself
+			// layover element that goes over the iframe
+	
+		}]);
+	
+		function Builder(cont, token, opts) {
+			_classCallCheck(this, Builder);
+	
+			var _this = _possibleConstructorReturn(this, (Builder.__proto__ || Object.getPrototypeOf(Builder)).call(this));
+	
+			_this.index = null;
+			_this.id = null;
+			_this.mobile = null;
+			_this.token = null;
+			_this.promise = null;
+			_this.metadata = null;
+			_this.cont = null;
+			_this.iframe = null;
+			_this.layover = null;
+			_this.loaded = false;
+			_this._firstSize = true;
+			_this._height = 0;
+			_this._hypeDragData = false;
+	
+			_this._onResize = function (evt) {
+				var newHeight = evt.data.height;
+	
+				if (_this._firstSize) _this.iframe.style.width = _this.mobile ? '100%' : evt.data.width + 'px';
+	
+				if (!_this._firstSize) _this.iframe.style.transition = 'height ' + (newHeight < _this._height ? 400 : 200) + 'ms';
+	
+				if (!_this._firstSize && _this.maxxed) _this.cont.style.height = newHeight + 'px';
+	
+				_this.iframe.style.height = newHeight + 'px';
+	
+				_this._height = newHeight;
+				_this._firstSize = false;
+			};
+	
+			_this._dragstart = function (evt) {
+				// if not a poll builder intended item, ignore
+				if (!evt || !evt.target || !evt.target.hasAttribute || !evt.target.hasAttribute('data-poll-builder')) return;
+	
+				var data = evt.target.getAttribute('data-poll-builder');
+	
+				if (data) {
+					_this._hypeDragData = data;
+	
+					if (evt.dataTransfer && evt.dataTransfer.setData) evt.dataTransfer.setData('text', data); // firefox needs dataTransfer data to work, but we don't actually use it
+	
+					_this.iframe.style.pointerEvents = 'none';
+					_this.layover.style.display = 'block';
+					_this.iframe.contentWindow.postMessage({ event: 'dragstart' }, pollBuilder._targetOrigin);
+					_this.dispatchEvent({ type: 'pb:begindrag' });
+				}
+			};
+	
+			_this._dragend = function (evt) {
+				if (_this._hypeDragData) {
+					_this._hypeDragData = false;
+	
+					_this.iframe.style.pointerEvents = 'auto';
+					_this.layover.style.display = 'none';
+					_this.iframe.contentWindow.postMessage({ event: 'dragend' }, pollBuilder._targetOrigin);
+				}
+			};
+	
+			_this._dragover = function (evt) {
+				if (!_this._hypeDragData) return;
+	
+				var target = evt.currentTarget.querySelector('iframe');
+				target.contentWindow.postMessage({ event: 'dragover' }, pollBuilder._targetOrigin);
+	
+				evt.preventDefault();
+				return false;
+			};
+	
+			_this._dragleave = function (evt) {
+				if (!_this._hypeDragData) return;
+	
+				var target = evt.currentTarget.querySelector('iframe');
+				target.contentWindow.postMessage({ event: 'dragleave' }, pollBuilder._targetOrigin);
+	
+				evt.preventDefault();
+				return false;
+			};
+	
+			_this._drop = function (evt) {
+				if (!_this._hypeDragData) return;
+	
+				try {
+					_this._hypeDragData = JSON.parse(_this._hypeDragData);
+				} catch (e) {}
+	
+				var target = evt.currentTarget.querySelector('iframe');
+				target.contentWindow.postMessage({ event: 'drop', data: _this._hypeDragData }, pollBuilder._targetOrigin);
+	
+				evt.stopPropagation();
+				evt.preventDefault();
+			};
+	
+			_this._buttonadd = function (btn) {
+				try {
+	
+					var data = btn.getAttribute('data-poll-builder');
+					data = JSON.parse(data);
+	
+					if (_this.iframe) {
+						_this.iframe.contentWindow.postMessage({ event: 'add', data: data }, pollBuilder._targetOrigin);
+						_this.dispatchEvent({ type: 'pb:buttonadd', button: btn });
+						pollBuilder.dispatchEvent({ type: 'pb:buttonadd', button: btn });
+					}
+	
+					pollBuilder.maximizeSticky(_this.index);
+				} catch (e) {}
+			};
+	
+			var index = _this.index = Builder.instances.length;
+			Builder.instances[index] = _this;
+	
+			if (!pollBuilder.isSupported()) {
+				var _ret;
+	
+				console.warn("This browser/device is not capable of using hyperr poll builder and will not embed. You can use `pollBuilder.isSupported()` to determine this at runtime.");
+				return _ret = { promise: Promise.resolve(null) }, _possibleConstructorReturn(_this, _ret);
+			}
+	
+			_this.promise = new Promise(function (resolve, reject) {
+				var style = window.getComputedStyle(cont);
+				if (style.getPropertyValue('position') === 'static') {
+					console.warn('Embed container must not be set to the CSS `position:static;`. It will be changed to relative.');
+					cont.style.position = 'relative';
+				}
+	
+				(0, _request2.default)('GET', pollBuilder._apiURL + '/builders/' + token).then(function (metadata) {
+					_this.metadata = metadata;
+					_this.index = index;
+					_this.cont = typeof cont === 'string' ? window.document.querySelector(cont) : cont;
+					_this.id = 'pollbuilder-iframe-' + _this.index;
+					_this.mobile = opts && opts.useMobile;
+	
+					var urlWVars = pollBuilder._pollBuilderURL + '/' + token + '?pollBuilderID=' + _this.id + '&pollBuilderIndex=' + index + '&scriptVersion=' + pollBuilder.version + (_this.mobile ? '&mobile=1' : '') + (pollBuilder.dragAndDropSupported() ? '&dnd=1' : '');
+					var addHTML = '<iframe id="' + _this.id + '" class="pollbuilder-iframe" onload="pollBuilder._iframeLoaded(' + index + ');" src="' + urlWVars + '"></iframe><div class="pollbuilder-iframe-layover"></div>';
+					addHTML += cssToAdd(); // adds static CSS needed if not already added
+	
+					cont.innerHTML = addHTML;
+					cont.addEventListener('drop', _this._drop, false);
+					cont.addEventListener('dragover', _this._dragover, false);
+					cont.addEventListener('dragleave', _this._dragleave, false);
+					cont.className += ' pollbuilder-cont';
+	
+					var iframe = _this.iframe = cont.querySelector('iframe');
+					iframe.builder = _this;
+					iframe.style.width = '0px';
+					iframe.style.height = '0px';
+	
+					_this.layover = cont.querySelector('.pollbuilder-iframe-layover');
+	
+					_this.addEventListener('pb:sizechange', _this._onResize);
+	
+					resolve(iframe);
+				}).catch(function (err) {
+					reject(err);
+				});
+			});
+			return _this;
+		}
+	
+		// INTERNAL -----------------------------------------------------------
+	
+		return Builder;
+	}(_EventDispatcher3.default);
+	
+	// STATIC PRIVATE  -----------------------------------------------------------
+	
+	Builder.instances = [];
+	exports.default = Builder;
+	var cssAdded = false;
+	function cssToAdd() {
+		if (!cssAdded) {
+			cssAdded = true;
+			return '\n\t\t\t<style>\n\t\t\t\t.pollbuilder-cont {\n\t\t\t\t\toverflow: hidden;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\t.pollbuilder-iframe-layover {\n\t\t\t\t\tdisplay: none;\n\t\t\t\t\tposition: absolute;\n\t\t\t\t\twidth: 100%;\n\t\t\t\t\theight: 100%;\n\t\t\t\t\tleft: 0;\n\t\t\t\t\ttop: 0;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\t.pollbuilder-iframe {\n\t\t\t\t\tborder: none;\n\t\t\t\t\toutline: none;\n\t\t\t\t\tdisplay: block;\n\t\t\t\t}\n\t\t\t</style>';
+		} else {
+			return '';
+		}
+	}
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	exports.default = request;
+	
+	// assumes a JSON return value
+	function request(verb, url, body, headers) {
+		return new Promise(function (resolve, reject) {
+			if (!body) body = '';
+			if ((typeof body === 'undefined' ? 'undefined' : _typeof(body)) === 'object') body = JSON.stringify(body);
+	
+			var req = new XMLHttpRequest();
+			req.open(verb, url, true);
+			req.setRequestHeader('Content-Type', 'application/json');
+			req.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	
+			if (headers) for (var key in headers) {
+				req.setRequestHeader(key, headers[key]);
+			}req.onerror = function () {
+				reject(new Error('No server response.'));
+			};
+	
+			req.onload = function () {
+				try {
+					var response = JSON.parse(req.responseText);
+				} catch (e) {
+					reject(new Error('Invalid JSON response. Responded:\n\n' + req.responseText));
+				}
+				if (req.status >= 200 && req.status < 400 && response) {
+					resolve(response);
+				} else {
+					reject(new Error(response));
+				}
+			};
+	
+			req.send(body);
+		});
+	}
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _utils = __webpack_require__(2);
+	
+	var _Builder2 = __webpack_require__(5);
+	
+	var _Builder3 = _interopRequireDefault(_Builder2);
+	
+	var _SVGButton = __webpack_require__(8);
+	
+	var _SVGButton2 = _interopRequireDefault(_SVGButton);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var StickyBuilder = function (_Builder) {
+		_inherits(StickyBuilder, _Builder);
+	
+		// the initialization object used, normalized to defaults
+	
+		// another container holding this.cont and this.button, necessary for sticky
+		function StickyBuilder(token, init) {
+			_classCallCheck(this, StickyBuilder);
+	
+			// create the container that holds the poll builder part
+			var cont = document.createElement('div');
+	
+			// if init.useMobile is null then detect on our own, otherwise honor their manual setting
+			var useMobile = isEmpty(init.useMobile) ? (0, _utils.shouldEmbedMobile)() : init.useMobile;
+	
+			// super, and create the builder
+	
+			var _this = _possibleConstructorReturn(this, (StickyBuilder.__proto__ || Object.getPrototypeOf(StickyBuilder)).call(this, cont, token, { useMobile: useMobile }));
+	
+			_initialiseProps.call(_this);
+	
+			_this.promise.then(function (iframe) {
+				// if it didn't embed, that's the end of it
+				if (!_this.iframe) return;
+	
+				// allow them to just use a string for init to use for buttons
+				if (typeof init === 'string') init = { addButtons: init };
+	
+				// add defaults to init for any not provided
+				init = handleDefaults(init, _this.metadata);
+	
+				// if not drag and drop AND no addButtons given, then we don't want to embed because there won't be an adding method
+				if (!pollBuilder.dragAndDropSupported() && !init.addButtons) {
+					console.warn("Poll builder will not be embedded because this browser/device is not capable of drag and drop adding, and no other adding method is being used. Try the init option `addButtons` to allow adding that way.");
+					return { promise: Promise.resolve(null) };
+				}
+	
+				_this.init = init;
+				_this.sticky = sticky;
+	
+				// apply styles to cont
+				cont.style.cssText = _this.mobile ? init.mobileBuilderStyles : init.builderStyles;
+	
+				// add the cont transition event loop so that it doesn't animate from load
+				setTimeout(function () {
+					cont.style.transition = 'height 400ms ease-in-out, opacity 400ms';
+				}, 0);
+	
+				if (init.addButtons) pollBuilder.addButtons(init.addButtons);
+	
+				// create main container that holds it all
+				var sticky = _this.sticky = document.createElement('div');
+				sticky.id = 'pollbuilder-sticky-' + _this.index;
+				sticky.className = 'pollbuilder-sticky';
+				if (_this.mobile) sticky.className += ' pollbuilder-sticky-mobile';
+	
+				// now add the cont to it, and add it to the page
+				sticky.appendChild(cont);
+				document.body.appendChild(sticky);
+	
+				// we won't know the data width until the iframe randers and gives it to us via this event
+				_this.addEventListener('pb:sizechange', _this._onResize2);
+				_this.addEventListener('pb:sizechange', _this._onFirstResize);
+	
+				// listen for a begindrag and open it
+				_this.addEventListener('pb:begindrag', function () {
+					pollBuilder.maximizeSticky(this.index);
+				});
+	
+				// and listen for pb:closebuilder and pb:openbuilder for the builder wanting to close/open itself
+				_this.addEventListener('pb:closebuilder', function () {
+					pollBuilder.minimizeSticky(this.index);
+				});
+				_this.addEventListener('pb:openbuilder', function () {
+					pollBuilder.maximizeSticky(this.index);
+				});
+	
+				// now start out minimized
+				pollBuilder.minimizeSticky(_this.index);
+	
+				// float it to one side depending on the side it's on, cuz it makes it animate better
+				_this.iframe.style.float = init.side === 'right' ? 'left' : 'right';
+			});
+			return _this;
+		} // the container of the button used, as set up in init
+	
+	
+		_createClass(StickyBuilder, [{
+			key: 'minimize',
+			value: function minimize() {
+				if (this.maxxed && this.loaded) {
+					this.iframe.contentWindow.postMessage({ event: 'stickyminimize' }, pollBuilder._targetOrigin);
+					var event = { type: 'pb:minimized' };
+					this.dispatchEvent(event);
+					pollBuilder.dispatchEvent(event);
+				}
+	
+				this.sticky.setAttribute('data-maximized', '0');
+				this.button && this.button.setAttribute('data-maximized', '0');
+				this.cont.style.height = '0px';
+			}
+		}, {
+			key: 'maximize',
+			value: function maximize() {
+				var maxW = this.cont.getAttribute('data-width');
+				var maxH = this.cont.getAttribute('data-height');
+	
+				if (!this.maxxed) {
+					this.iframe.contentWindow.postMessage({ event: 'stickymaximize' }, pollBuilder._targetOrigin);
+					var event = { type: 'pb:maximized' };
+					this.dispatchEvent(event);
+					pollBuilder.dispatchEvent(event);
+				}
+	
+				this.sticky.setAttribute('data-maximized', '1');
+				this.button && this.button.setAttribute('data-maximized', '1');
+				this.cont.style.height = maxH + 'px';
+			}
+		}, {
+			key: 'toggle',
+			value: function toggle() {
+				if (this.maxxed) this.minimize();else this.maximize();
+			}
+		}, {
+			key: 'maxxed',
+			get: function get() {
+				return this.sticky.getAttribute('data-maximized') != false;
+			}
+	
+			// INTERNAL -----------------------------------------------------------
+	
+		}]);
+	
+		return StickyBuilder;
+	}(_Builder3.default);
+	
+	// STATIC PRIVATE -----------------------------------------------------------
+	
+	var _initialiseProps = function _initialiseProps() {
+		var _this2 = this;
+	
+		this.sticky = null;
+		this.button = null;
+		this.init = null;
+	
+		this._onResize2 = function (evt) {
+			// track the width needed for the builder, or height since that's needed for mobile one
+			_this2.cont.setAttribute('data-width', evt.data.width);
+			_this2.cont.setAttribute('data-height', evt.data.height);
+		};
+	
+		this._onFirstResize = function (evt) {
+			var init = _this2.init;
+	
+			// create the container and contents of the poll builder button
+			var btn = _this2.button = document.createElement('div');
+			btn.style.cssText = _this2.mobile ? init.mobileButtonStyles : init.buttonStyles;
+			btn.className = 'pollbuilder-button pollbuilder-button-hidden';
+			btn.id = 'pollbuilder-button-' + _this2.index;
+			btn.addEventListener('click', pollBuilder.toggleSticky.bind(null, _this2.index));
+			setTimeout(function () {
+				btn.className = 'pollbuilder-button';
+			}, init.buttonDelay);
+	
+			// fill that container based on the method from the init object
+			if (init.buttonMarkup) {
+				btn.innerHTML = init.buttonMarkup;
+			} else if (init.buttonImage) {
+				var attr2xMain = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);this.style.opacity=1;"' : 'onload="this.style.opacity=1;"';
+				var attr2x = init.buttonImages2x ? 'onload="pollBuilder.utils.halfenImage(this);"' : '';
+				btn.innerHTML = '<img src="' + init.buttonImage + '" class="pollbuilder-button-state pollbuilder-button-normal" ' + attr2xMain + '/>';
+	
+				if (init.buttonImageHover) btn.innerHTML += '<img src="' + init.buttonImageHover + '" class="pollbuilder-button-state pollbuilder-button-hover" ' + attr2x + '/>';
+				if (init.buttonImageActive) btn.innerHTML += '<img src="' + init.buttonImageActive + '" class="pollbuilder-button-state pollbuilder-button-active" ' + attr2x + '/>';
+			} else {
+				console.warn('No button image or markup was given for the poll builder!');
+			}
+	
+			btn.innerHTML += cssToAdd();
+			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
+			if (_this2.mobile) {
+				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t\n\t\t\t</style>'; // Mobile CSS, separate to make it only apply to mobile ones, and future applying of init options
+			} else {
+				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.builderOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.builderOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t}\n\t\t\t</style>'; // Desktop CSS, only applies to desktop
+			}
+	
+			document.body.appendChild(btn);
+	
+			// remove listener
+			_this2.removeEventListener('pb:sizechange', _this2._onFirstResize);
+		};
+	};
+	
+	exports.default = StickyBuilder;
+	function handleDefaults(init, metadata) {
+		init = init || {};
+		init.side = (0, _utils.def)(init.side, 'right');
+		init.fromTop = (0, _utils.def)(init.fromTop, false);
+		init.buttonOffsetX = (0, _utils.def)(init.buttonOffsetX, 20);
+		init.buttonOffsetY = (0, _utils.def)(init.buttonOffsetY, 20);
+		init.builderOffsetX = (0, _utils.def)(init.builderOffsetX, 20);
+		init.builderOffsetY = (0, _utils.def)(init.builderOffsetY, 20);
+		init.position = (0, _utils.def)(init.position, 'fixed');
+		init.zIndex = (0, _utils.def)(init.zIndex, 99);
+		init.buttonImage = (0, _utils.def)(init.buttonImage, null);
+		init.buttonImageHover = (0, _utils.def)(init.buttonImageHover, null);
+		init.buttonImageActive = (0, _utils.def)(init.buttonImageActive, null);
+		init.buttonImages2x = (0, _utils.def)(init.buttonImages2x, false);
+		init.buttonMarkup = (0, _utils.def)(init.buttonMarkup, null);
+		init.backgroundColor = (0, _utils.def)(init.backgroundColor, '#fff');
+		init.addButtons = (0, _utils.def)(init.addButtons, false);
+		init.useMobile = (0, _utils.def)(init.useMobile, null);
+		init.buttonColor = (0, _utils.def)(init.buttonColor, metadata.theme.buttonColor || (!init.highlight ? '#fff' : init.highlight));
+		init.invertButton = (0, _utils.def)(init.invertButton, isEmpty(metadata.theme.invertButton) ? !!init.highlight : metadata.theme.invertButton);
+		init.highlight = (0, _utils.def)(init.highlight, metadata.theme.highlight || '#000');
+		init.buttonStyles = (0, _utils.def)(init.buttonStyles, 'box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);');
+		init.builderStyles = (0, _utils.def)(init.builderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;');
+		init.mobileButtonStyles = (0, _utils.def)(init.mobileButtonStyles, init.buttonStyles);
+		init.mobileBuilderStyles = (0, _utils.def)(init.mobileBuilderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 0 0 6px 0 rgba(0, 0, 0, 0.15);');
+		init.buttonDelay = (0, _utils.def)(init.buttonDelay, 3000);
+	
+		// if button is not set at all by user, then use default values
+		if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {
+			init.buttonMarkup = new _SVGButton2.default('pollbuilder-button-normal', init.buttonColor, 0, !init.invertButton) + new _SVGButton2.default('pollbuilder-button-hover', init.buttonColor, 0.3, !init.invertButton);
+			init.buttonStyles += 'border-radius: 999px;';
+			init.mobileButtonStyles += 'border-radius: 999px;';
+		}
+	
+		return init;
+	}
+	
+	function isEmpty(val) {
+		return typeof val === 'undefined' || val === null;
+	}
+	
+	var cssAdded = false;
+	function cssToAdd() {
+		if (!cssAdded) {
+			cssAdded = true;
+			return '\n\t\t\t<style>\n\t\t\t\t.pollbuilder-button {\n\t\t\t\t\tposition: fixed;\n\t\t\t\t\tcursor: pointer;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\t.pollbuilder-button .pollbuilder-button-state {\n\t\t\t\t\tdisplay: block;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tmax-width: none;\n\t\t\t\t\tmax-height: none;\n\t\t\t\t\twidth: auto;\n\t\t\t\t\theight: auto;\n\t\t\t\t}\n\t\t\t\t.pollbuilder-button svg.pollbuilder-button-state {\n\t\t\t\t\twidth: 80px;\n\t\t\t\t\theight: 80px;\n\t\t\t\t}\n\t\t\t\t.pollbuilder-button .pollbuilder-button-normal {\n\t\t\t\t\topacity: 1;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\t.pollbuilder-button .pollbuilder-button-state.pollbuilder-button-hover,\n\t\t\t\t.pollbuilder-button .pollbuilder-button-state.pollbuilder-button-active {\n\t\t\t\t\tposition: absolute;\n\t\t\t\t\tleft: 0;\n\t\t\t\t\ttop: 0;\n\t\t\t\t\topacity: 0;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\t.pollbuilder-button:hover .pollbuilder-button-state.pollbuilder-button-hover { opacity:1; }\n\t\t\t\t.pollbuilder-button:active .pollbuilder-button-state.pollbuilder-button-active { opacity:1; }\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t.pollbuilder-sticky-mobile {\n\t\t\t\t\ttop: auto !important;\n\t\t\t\t\tbottom: 0px !important;\n\t\t\t\t\tmin-width: 320px;\n\t\t\t\t}\n\t\t\t\t@media screen and (max-width: 440px) {\n\t\t\t\t\t.pollbuilder-sticky-mobile {\n\t\t\t\t\t\twidth: 100% !important;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\t@media screen and (min-width: 441px) {\n\t\t\t\t\t.pollbuilder-sticky-mobile {\n\t\t\t\t\t\twidth: 440px !important;\n\t\t\t\t\t\tleft: 50%;\n\t\t\t\t\t\ttransform: translateX(-50%);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t</style>';
+		} else {
+			return '';
+		}
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var SVGButton = function () {
+		function SVGButton(className) {
+			var circleBackground = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#fff';
+			var washPercent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+			var blackText = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+			var fadeBackground = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '#fff';
+	
+			_classCallCheck(this, SVGButton);
+	
+			this.className = className;
+			this.circleBackground = circleBackground;
+			this.washPercent = washPercent;
+			this.blackText = blackText;console.log('black:', blackText);
+			this.fadeBackground = fadeBackground;
+		}
+	
+		_createClass(SVGButton, [{
+			key: 'toString',
+			value: function toString() {
+				return '\n\t\t<svg class="pollbuilder-button-state ' + this.className + '" viewBox="0 0 80 80" style="background-color:#ffffff00" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" x="0px" y="0px" width="80px" height="80px">\n\t\t\t<circle cx="40" cy="40" r="40" fill="' + this.fadeBackground + '" />\n\t\t\t<circle cx="40" cy="40" r="38.5" fill="' + this.circleBackground + '" stroke="' + (this.blackText ? '#000' : '#fff') + '" stroke-width="1.5" opacity="' + (1 - this.washPercent) + '" />\n\t\t\t<image x="13" y="27" width="56" height="29" xlink:href="' + pollBuilder._pollBuilderURL + '/assets/other/poll_your_friends-' + (this.blackText ? 'black' : 'white') + '.png" opacity="' + (1 - this.washPercent) + '"/>\n\t\t</svg>';
+			}
+		}]);
+	
+		return SVGButton;
+	}();
+	
+	exports.default = SVGButton;
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {'use strict';
@@ -852,10 +1344,10 @@
 	  // modified from original to act as actual polyfill instead of UMD
 	  if (window && !window.Promise) window.Promise = Promise;
 	})(undefined);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate))
 
 /***/ },
-/* 5 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -908,12 +1400,12 @@
 	};
 	
 	// setimmediate attaches itself to the global object
-	__webpack_require__(6);
+	__webpack_require__(11);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 /***/ },
-/* 6 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {"use strict";
@@ -1100,10 +1592,10 @@
 	    attachTo.setImmediate = setImmediate;
 	    attachTo.clearImmediate = clearImmediate;
 	})(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)))
 
 /***/ },
-/* 7 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';

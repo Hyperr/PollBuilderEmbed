@@ -1,4 +1,6 @@
 
+import Platform from './Platform';
+
 export function def(val, dflt) {
 	return typeof val === 'undefined' ? dflt : val;
 }
@@ -6,11 +8,32 @@ export function def(val, dflt) {
 
 export function isSupported()
 {
+	var ie = getIEVersion();
+	
+	if (ie && ie < 10)
+		return false;
+	
+	return true;
+}
+
+export function dragAndDropSupported()
+{
 	var hasDraggable  = "draggable" in document.createElement("div");
 	var isKnownMobile = /Mobile|Android|Slick\/|Kindle|BlackBerry|Opera Mini|Opera Mobi/i.test(navigator.userAgent);
 	var hasEvents     = isEventSupported('dragstart') && isEventSupported('drop');
 	
 	return hasDraggable && hasEvents && !isKnownMobile;
+}
+
+export function shouldEmbedMobile()
+{
+	return Platform.mobile;
+}
+
+function getIEVersion() // Note: undefined for IE Edge
+{
+    var match = navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
+    return match ? parseInt(match[1]) : undefined;
 }
 
 // isEventSupported code derived from https://github.com/kangax/iseventsupported
