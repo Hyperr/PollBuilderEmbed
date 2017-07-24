@@ -180,6 +180,7 @@ export default class StickyBuilder extends Builder
 					${init.fromTop ? 'top' : 'bottom'}: ${init.buttonOffsetX}px;
 					${init.fromTop ? 'bottom' : 'top'}: auto;
 					transition: opacity 200ms;
+					z-index: ${init.zIndex};
 				}
 				#pollbuilder-button-${this.index}[data-maximized="1"],
 				#pollbuilder-button-${this.index}.pollbuilder-button-hidden {
@@ -206,7 +207,7 @@ export default class StickyBuilder extends Builder
 			</style>` // Desktop CSS, only applies to desktop
 		}
 		
-		document.body.appendChild(btn);
+		document.body.insertBefore(btn, this.sticky);
 		
 		// remove listener
 		this.removeEventListener('pb:sizechange', this._onFirstResize);

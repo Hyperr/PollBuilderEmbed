@@ -975,14 +975,14 @@
 			}
 	
 			btn.innerHTML += cssToAdd();
-			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
+			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
 			if (_this2.mobile) {
 				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t\n\t\t\t</style>'; // Mobile CSS, separate to make it only apply to mobile ones, and future applying of init options
 			} else {
 				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.builderOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.builderOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t}\n\t\t\t</style>'; // Desktop CSS, only applies to desktop
 			}
 	
-			document.body.appendChild(btn);
+			document.body.insertBefore(btn, _this2.sticky);
 	
 			// remove listener
 			_this2.removeEventListener('pb:sizechange', _this2._onFirstResize);
