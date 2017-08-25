@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.1', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -975,7 +975,7 @@
 			}
 	
 			btn.innerHTML += cssToAdd();
-			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
+			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ':not(.pollbuilder-sticky-mobile) {\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
 			if (_this2.mobile) {
 				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t\n\t\t\t</style>'; // Mobile CSS, separate to make it only apply to mobile ones, and future applying of init options
 			} else {
@@ -1015,7 +1015,7 @@
 		init.builderStyles = (0, _utils.def)(init.builderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;');
 		init.mobileButtonStyles = (0, _utils.def)(init.mobileButtonStyles, init.buttonStyles);
 		init.mobileBuilderStyles = (0, _utils.def)(init.mobileBuilderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 0 0 6px 0 rgba(0, 0, 0, 0.15);');
-		init.buttonDelay = (0, _utils.def)(init.buttonDelay, 3000);
+		init.buttonDelay = (0, _utils.def)(init.buttonDelay, 0);
 	
 		// if button is not set at all by user, then use default values
 		if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {

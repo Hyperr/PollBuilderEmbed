@@ -1,11 +1,11 @@
 
-##### pb:openbuilder
+##### pb:maximized
 
-The `pb:openbuilder` event indicates that the builder has been opened on the user's screen.
+The `pb:maximized` event indicates that the builder has been opened on the user's screen.
 
-##### pb:closebuilder
+##### pb:minimized
 
-The `pb:closebuilder` event indicates that the builder has been closed on the user's screen.
+The `pb:minimized` event indicates that the builder has been closed on the user's screen.
 
 ##### pb:drop
 

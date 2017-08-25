@@ -173,6 +173,9 @@ export default class StickyBuilder extends Builder
 					background-color: ${init.backgroundColor};
 					z-index: ${init.zIndex};
 				}
+				#pollbuilder-sticky-${this.index}:not(.pollbuilder-sticky-mobile) {
+					border-radius: 6px;
+				}
 				#pollbuilder-button-${this.index} {
 					position: ${init.position};
 					${init.side==='left' ? 'left' : 'right'}: ${init.buttonOffsetY}px;
@@ -243,7 +246,7 @@ function handleDefaults(init, metadata)
 	init.builderStyles = def(init.builderStyles, `box-shadow: 1px 0 1px ${init.highlight},-1px 0 1px ${init.highlight},0 1px 1px ${init.highlight},0 -1px 1px ${init.highlight}, 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;`);
 	init.mobileButtonStyles = def(init.mobileButtonStyles, init.buttonStyles);
 	init.mobileBuilderStyles = def(init.mobileBuilderStyles, `box-shadow: 1px 0 1px ${init.highlight},-1px 0 1px ${init.highlight},0 1px 1px ${init.highlight},0 -1px 1px ${init.highlight}, 0 0 6px 0 rgba(0, 0, 0, 0.15);`);
-	init.buttonDelay = def(init.buttonDelay, 3000);
+	init.buttonDelay = def(init.buttonDelay, 0);
 	
 	// if button is not set at all by user, then use default values
 	if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {
