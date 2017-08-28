@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.2', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.3', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -1020,7 +1020,7 @@
 		// if button is not set at all by user, then use default values
 		if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {
 			init.buttonMarkup = new _SVGButton2.default('pollbuilder-button-normal', init.buttonColor, 0, !init.invertButton) + new _SVGButton2.default('pollbuilder-button-hover', init.buttonColor, 0.3, !init.invertButton);
-			init.buttonStyles += 'border-radius: 999px;';
+			init.buttonStyles += 'border-radius: 999px; opacity: 0;';
 			init.mobileButtonStyles += 'border-radius: 999px;';
 		}
 	
@@ -1079,8 +1079,8 @@
 		}, {
 			key: 'imgLoadCode',
 			value: function imgLoadCode() {
-				// removes the 'pollbuilder-button-state-loading' class once the image is loaded
-				return 'this.parentElement.setAttribute(\'class\', this.parentElement.getAttribute(\'class\').replace(/ pollbuilder-button-state-loading/, \'\'));';
+				// removes the 'pollbuilder-button-state-loading' class once the image is loaded, and sets the opacity of the main button container to 1 (since it starts at 0 when using default sticker)
+				return 'this.parentNode.setAttribute(\'class\', this.parentNode.getAttribute(\'class\').replace(/ pollbuilder-button-state-loading/, \'\')); if(this.parentNode.parentNode) this.parentNode.parentNode.style.opacity = 1;';
 			}
 		}]);
 	

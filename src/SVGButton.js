@@ -22,7 +22,7 @@ export default class SVGButton
 	
 	imgLoadCode()
 	{
-		// removes the 'pollbuilder-button-state-loading' class once the image is loaded
-		return `this.parentElement.setAttribute('class', this.parentElement.getAttribute('class').replace(/ pollbuilder-button-state-loading/, ''));`;
+		// removes the 'pollbuilder-button-state-loading' class once the image is loaded, and sets the opacity of the main button container to 1 (since it starts at 0 when using default sticker)
+		return `this.parentNode.setAttribute('class', this.parentNode.getAttribute('class').replace(/ pollbuilder-button-state-loading/, '')); if(this.parentNode.parentNode) this.parentNode.parentNode.style.opacity = 1;`;
 	}
 }
