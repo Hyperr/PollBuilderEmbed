@@ -306,6 +306,10 @@ function cssToAdd()
 				.pollbuilder-button:hover .pollbuilder-button-state.pollbuilder-button-hover { opacity:1; }
 				.pollbuilder-button:active .pollbuilder-button-state.pollbuilder-button-active { opacity:1; }
 				
+				.pollbuilder-button .pollbuilder-button-state.pollbuilder-button-state-loading {
+					opacity: 0 !important;
+				}
+				
 				
 				
 				.pollbuilder-sticky-mobile {
