@@ -187,7 +187,7 @@ export default class StickyBuilder extends Builder
 				}
 				#pollbuilder-button-${this.index}[data-maximized="1"],
 				#pollbuilder-button-${this.index}.pollbuilder-button-hidden {
-					opacity: 0;
+					opacity: 0 !important;
 					pointer-events: none;
 				}
 			</style>` // Normal CSS, seperate because of init options making each builder different
@@ -252,7 +252,7 @@ function handleDefaults(init, metadata)
 	if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {
 		init.buttonMarkup = new SVGButton('pollbuilder-button-normal', init.buttonColor, 0, !init.invertButton) + new SVGButton('pollbuilder-button-hover', init.buttonColor, 0.3, !init.invertButton);
 		init.buttonStyles += 'border-radius: 999px; opacity: 0;';
-		init.mobileButtonStyles += 'border-radius: 999px;';
+		init.mobileButtonStyles += 'border-radius: 999px; opacity: 0;';
 	}
 	
 	return init;
@@ -281,7 +281,7 @@ function cssToAdd()
 				}
 				
 				.pollbuilder-button .pollbuilder-button-state-cont {
-					transition: opacity 200ms;
+					transition: opacity 300ms;
 					opacity: 1;
 					position: absolute;
 				}
