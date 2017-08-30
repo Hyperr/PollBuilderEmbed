@@ -276,20 +276,29 @@ function cssToAdd()
 				.pollbuilder-button {
 					position: fixed;
 					cursor: pointer;
+					width: 80px;
+					height: 80px;
+				}
+				
+				.pollbuilder-button .pollbuilder-button-state-cont {
+					transition: opacity 200ms;
+					opacity: 1;
+					position: absolute;
+				}
+				.pollbuilder-button .pollbuilder-button-state-cont.pollbuilder-button-state-loading {
+					opacity: 0 !important;
 				}
 				
 				.pollbuilder-button .pollbuilder-button-state {
 					display: block;
-					transition: opacity 200ms;
-					opacity: 0;
 					max-width: none;
 					max-height: none;
 					width: auto;
 					height: auto;
+					transition: opacity 200ms;
 				}
 				.pollbuilder-button svg.pollbuilder-button-state {
-					width: 80px;
-					height: 80px;
+					
 				}
 				.pollbuilder-button .pollbuilder-button-normal {
 					opacity: 1;
@@ -305,10 +314,6 @@ function cssToAdd()
 				
 				.pollbuilder-button:hover .pollbuilder-button-state.pollbuilder-button-hover { opacity:1; }
 				.pollbuilder-button:active .pollbuilder-button-state.pollbuilder-button-active { opacity:1; }
-				
-				.pollbuilder-button .pollbuilder-button-state.pollbuilder-button-state-loading {
-					opacity: 0 !important;
-				}
 				
 				
 				
