@@ -251,8 +251,8 @@ function handleDefaults(init, metadata)
 	// if button is not set at all by user, then use default values
 	if (!init.buttonImage && !init.buttonImageHover && !init.buttonImageActive && !init.buttonImages2x && !init.buttonMarkup) {
 		init.buttonMarkup = new SVGButton('pollbuilder-button-normal', init.buttonColor, 0, !init.invertButton) + new SVGButton('pollbuilder-button-hover', init.buttonColor, 0.3, !init.invertButton);
-		init.buttonStyles += 'border-radius: 999px; opacity: 0;';
-		init.mobileButtonStyles += 'border-radius: 999px; opacity: 0;';
+		init.buttonStyles += 'border-radius:999px; opacity:0; width:80px; height:80px;';
+		init.mobileButtonStyles += 'border-radius:999px; opacity:0; width:80px; height:80px;';
 	}
 	
 	return init;
@@ -276,8 +276,6 @@ function cssToAdd()
 				.pollbuilder-button {
 					position: fixed;
 					cursor: pointer;
-					width: 80px;
-					height: 80px;
 				}
 				
 				.pollbuilder-button .pollbuilder-button-state-cont {
