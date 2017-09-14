@@ -72,3 +72,11 @@ function isEventSupported(eventName, element)
 	element = null;
 	return isSupported;
 }
+
+export function cssUnit(val)
+{
+	if (typeof val === 'number')
+		return val + 'px';
+	else
+		return val;
+}

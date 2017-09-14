@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.0.5', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.1.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -303,6 +303,7 @@
 	exports.isSupported = isSupported;
 	exports.dragAndDropSupported = dragAndDropSupported;
 	exports.shouldEmbedMobile = shouldEmbedMobile;
+	exports.cssUnit = cssUnit;
 	
 	var _Platform = __webpack_require__(3);
 	
@@ -374,6 +375,10 @@
 	
 		element = null;
 		return isSupported;
+	}
+	
+	function cssUnit(val) {
+		if (typeof val === 'number') return val + 'px';else return val;
 	}
 
 /***/ },
@@ -975,11 +980,11 @@
 			}
 	
 			btn.innerHTML += cssToAdd();
-			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ':not(.pollbuilder-sticky-mobile) {\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.buttonOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.buttonOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0 !important;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
+			btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\tbackground-color: ' + init.backgroundColor + ';\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ':not(.pollbuilder-sticky-mobile) {\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + ' {\n\t\t\t\t\tposition: ' + init.position + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + (0, _utils.cssUnit)(init.buttonOffsetY) + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + (0, _utils.cssUnit)(init.buttonOffsetX) + ';\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t\ttransition: opacity 200ms;\n\t\t\t\t\tz-index: ' + init.zIndex + ';\n\t\t\t\t}\n\t\t\t\t#pollbuilder-button-' + _this2.index + '[data-maximized="1"],\n\t\t\t\t#pollbuilder-button-' + _this2.index + '.pollbuilder-button-hidden {\n\t\t\t\t\topacity: 0 !important;\n\t\t\t\t\tpointer-events: none;\n\t\t\t\t}\n\t\t\t</style>'; // Normal CSS, seperate because of init options making each builder different
 			if (_this2.mobile) {
 				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t\n\t\t\t</style>'; // Mobile CSS, separate to make it only apply to mobile ones, and future applying of init options
 			} else {
-				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + init.builderOffsetY + 'px;\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + init.builderOffsetX + 'px;\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t}\n\t\t\t</style>'; // Desktop CSS, only applies to desktop
+				btn.innerHTML += '\n\t\t\t<style>\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + '[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }\n\t\t\t\t#pollbuilder-sticky-' + _this2.index + ' {\n\t\t\t\t\t' + (init.side === 'left' ? 'left' : 'right') + ': ' + (0, _utils.cssUnit)(init.builderOffsetY) + ';\n\t\t\t\t\t' + (init.side === 'left' ? 'right' : 'left') + ': auto;\n\t\t\t\t\t' + (init.fromTop ? 'top' : 'bottom') + ': ' + (0, _utils.cssUnit)(init.builderOffsetX) + ';\n\t\t\t\t\t' + (init.fromTop ? 'bottom' : 'top') + ': auto;\n\t\t\t\t}\n\t\t\t</style>'; // Desktop CSS, only applies to desktop
 			}
 	
 			document.body.insertBefore(btn, _this2.sticky);

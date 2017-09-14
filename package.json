@@ -1,6 +1,6 @@
 {
   "name": "pollbuilder-embed",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "description": "Embeddable Polls in Your Website",
   "scripts": {
     "compile": "webpack && webpack --minimize"

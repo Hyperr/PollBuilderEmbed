@@ -1,5 +1,5 @@
 
-import {shouldEmbedMobile, def} from './utils'
+import {shouldEmbedMobile, def, cssUnit} from './utils'
 import Builder from './Builder'
 import SVGButton from './SVGButton'
 
@@ -178,9 +178,9 @@ export default class StickyBuilder extends Builder
 				}
 				#pollbuilder-button-${this.index} {
 					position: ${init.position};
-					${init.side==='left' ? 'left' : 'right'}: ${init.buttonOffsetY}px;
+					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.buttonOffsetY)};
 					${init.side==='left' ? 'right' : 'left'}: auto;
-					${init.fromTop ? 'top' : 'bottom'}: ${init.buttonOffsetX}px;
+					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.buttonOffsetX)};
 					${init.fromTop ? 'bottom' : 'top'}: auto;
 					transition: opacity 200ms;
 					z-index: ${init.zIndex};
@@ -202,9 +202,9 @@ export default class StickyBuilder extends Builder
 				#pollbuilder-sticky-${this.index}[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }
 				#pollbuilder-sticky-${this.index}[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }
 				#pollbuilder-sticky-${this.index} {
-					${init.side==='left' ? 'left' : 'right'}: ${init.builderOffsetY}px;
+					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.builderOffsetY)};
 					${init.side==='left' ? 'right' : 'left'}: auto;
-					${init.fromTop ? 'top' : 'bottom'}: ${init.builderOffsetX}px;
+					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.builderOffsetX)};
 					${init.fromTop ? 'bottom' : 'top'}: auto;
 				}
 			</style>` // Desktop CSS, only applies to desktop
