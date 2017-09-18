@@ -16,7 +16,7 @@ import './Promise';
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that pollbuilder served from hyperr knows what script is in use
-	version = '2.1.0'
+	version = '2.1.1'
 	
 	// whether or not this component is supported
 	isSupported = isSupported

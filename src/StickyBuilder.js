@@ -178,9 +178,9 @@ export default class StickyBuilder extends Builder
 				}
 				#pollbuilder-button-${this.index} {
 					position: ${init.position};
-					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.buttonOffsetY)};
+					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.buttonOffsetX)};
 					${init.side==='left' ? 'right' : 'left'}: auto;
-					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.buttonOffsetX)};
+					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.buttonOffsetY)};
 					${init.fromTop ? 'bottom' : 'top'}: auto;
 					transition: opacity 200ms;
 					z-index: ${init.zIndex};
@@ -202,9 +202,9 @@ export default class StickyBuilder extends Builder
 				#pollbuilder-sticky-${this.index}[data-maximized="1"] { opacity: 1; transition: opacity 300ms ease 150ms; }
 				#pollbuilder-sticky-${this.index}[data-maximized="0"] { opacity: 0; transition: opacity 300ms; }
 				#pollbuilder-sticky-${this.index} {
-					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.builderOffsetY)};
+					${init.side==='left' ? 'left' : 'right'}: ${cssUnit(init.builderOffsetX)};
 					${init.side==='left' ? 'right' : 'left'}: auto;
-					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.builderOffsetX)};
+					${init.fromTop ? 'top' : 'bottom'}: ${cssUnit(init.builderOffsetY)};
 					${init.fromTop ? 'bottom' : 'top'}: auto;
 				}
 			</style>` // Desktop CSS, only applies to desktop
