@@ -20,6 +20,7 @@ export default class Builder extends EventDispatcher
 		pollBuilder.dispatchEvent({type:'pb:enddrag'});
 	}
 	
+	static addButtons = []; // list of registered buttons
 	static buttonAdd(evt)
 	{
 		var btn = evt.currentTarget;

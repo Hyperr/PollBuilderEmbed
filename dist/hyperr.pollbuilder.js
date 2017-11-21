@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.1.1', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.2.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -185,10 +185,36 @@
 			}
 		}, {
 			key: 'addButtons',
-			value: function addButtons(queryStr) {
-				var list = document.querySelectorAll(queryStr);
+			value: function addButtons(list) {
+				if (typeof list === 'string') {
+					list = document.querySelectorAll(list); // assume is query selector string
+				} else if (Array.isArray(list)) {
+					// is Array, do nothing
+				} else {
+					list = [list]; // assume is the element itself, make into 1 item array
+				}
+	
 				for (var i = 0, ii = list.length; i < ii; i++) {
-					list[i].addEventListener('click', _Builder2.default.buttonAdd);
+					var btn = list[i];
+	
+					// if already in there don't do it again
+					if (_Builder2.default.addButtons.indexOf(btn) > -1) continue;
+	
+					_Builder2.default.addButtons.push(list[i]); // track it
+					list[i].addEventListener('click', _Builder2.default.buttonAdd); // add listener to it
+				}
+			}
+		}, {
+			key: 'cleanButtons',
+			value: function cleanButtons() {
+				var buttons = _Builder2.default.addButtons;
+	
+				var i = buttons.length;
+				while (i--) {
+					if (!document.body.contains(buttons[i])) {
+						buttons[i].removeEventListener('click', _Builder2.default.buttonAdd); // clean up listener
+						buttons.splice(i, 1); // un-track
+					}
 				}
 			}
 		}]);
@@ -522,6 +548,7 @@
 			}
 		}, {
 			key: 'buttonAdd',
+			// list of registered buttons
 			value: function buttonAdd(evt) {
 				var btn = evt.currentTarget;
 				var index = parseInt(btn.getAttribute('data-poll-builder-index')) || 0;
@@ -712,6 +739,7 @@
 	// STATIC PRIVATE  -----------------------------------------------------------
 	
 	Builder.instances = [];
+	Builder.addButtons = [];
 	exports.default = Builder;
 	var cssAdded = false;
 	function cssToAdd() {

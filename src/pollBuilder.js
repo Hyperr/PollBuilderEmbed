@@ -16,7 +16,7 @@ import './Promise';
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that pollbuilder served from hyperr knows what script is in use
-	version = '2.1.1'
+	version = '2.2.0'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
@@ -75,11 +75,42 @@ class PollBuilder extends EventDispatcher
 		inst.toggle();
 	}
 	
-	addButtons(queryStr)
+	addButtons(list)
 	{
-		var list = document.querySelectorAll(queryStr);
+		if (typeof list === 'string') {
+			list = document.querySelectorAll(list); // assume is query selector string
+		} else if (Array.isArray(list)) {
+			// is Array, do nothing
+		} else {
+			list = [list];// assume is the element itself, make into 1 item array
+		}
+		
 		for (var i=0,ii=list.length; i<ii; i++)
-			list[i].addEventListener('click', Builder.buttonAdd);
+		{
+			var btn = list[i];
+			
+			// if already in there don't do it again
+			if (Builder.addButtons.indexOf(btn) > -1)
+				continue;
+			
+			Builder.addButtons.push(list[i]); // track it
+			list[i].addEventListener('click', Builder.buttonAdd); // add listener to it
+		}
+	}
+	
+	cleanButtons()
+	{
+		var buttons = Builder.addButtons;
+		
+		var i = buttons.length;
+		while (i--)
+		{
+			if (!document.body.contains(buttons[i]))
+			{
+				buttons[i].removeEventListener('click', Builder.buttonAdd); // clean up listener
+				buttons.splice(i, 1); // un-track
+			}
+		}
 	}
 }
 
