@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.2.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.3.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -155,8 +155,8 @@
 	
 		}, {
 			key: 'embedSticky',
-			value: function embedSticky(token, init) {
-				var inst = new _StickyBuilder2.default(token, init);
+			value: function embedSticky(token, opts) {
+				var inst = new _StickyBuilder2.default(token, opts);
 				return inst.promise;
 			}
 		}, {
@@ -680,6 +680,8 @@
 				} catch (e) {}
 			};
 	
+			opts = opts || {};
+	
 			var index = _this.index = Builder.instances.length;
 			Builder.instances[index] = _this;
 	
@@ -702,9 +704,19 @@
 					_this.index = index;
 					_this.cont = typeof cont === 'string' ? window.document.querySelector(cont) : cont;
 					_this.id = 'pollbuilder-iframe-' + _this.index;
-					_this.mobile = opts && opts.useMobile;
+					_this.mobile = opts.useMobile;
 	
-					var urlWVars = pollBuilder._pollBuilderURL + '/' + token + '?pollBuilderID=' + _this.id + '&pollBuilderIndex=' + index + '&scriptVersion=' + pollBuilder.version + (_this.mobile ? '&mobile=1' : '') + (pollBuilder.dragAndDropSupported() ? '&dnd=1' : '');
+					// for if manual items are supplied, as either `item` (one) or `items` (as an array), needs same object notation as the attribute on the element would have been
+					// if included, will kill any memory saved items in poll
+					var items = opts.items || (opts.item ? [opts.item] : null);
+					var itemsVar = items ? '&items=' + encodeURIComponent(JSON.stringify(items)) : '';
+	
+					var dndVar = pollBuilder.dragAndDropSupported() ? '&dnd=1' : '';
+					var mobVar = _this.mobile ? '&mobile=1' : '';
+					var noSaveVar = opts.noSave ? '&noSave=1' : '';
+					var noDelVar = opts.noDelete ? '&noDelete=1' : '';
+	
+					var urlWVars = pollBuilder._pollBuilderURL + '/' + token + '?pollBuilderID=' + _this.id + '&pollBuilderIndex=' + index + '&scriptVersion=' + pollBuilder.version + mobVar + dndVar + itemsVar + noSaveVar + noDelVar;
 					var addHTML = '<iframe id="' + _this.id + '" class="pollbuilder-iframe" onload="pollBuilder._iframeLoaded(' + index + ');" src="' + urlWVars + '"></iframe><div class="pollbuilder-iframe-layover"></div>';
 					addHTML += cssToAdd(); // adds static CSS needed if not already added
 	
@@ -727,6 +739,8 @@
 				}).catch(function (err) {
 					reject(err);
 				});
+			}).catch(function (err) {
+				throw err;
 			});
 			return _this;
 		}
@@ -843,10 +857,11 @@
 	
 			// if init.useMobile is null then detect on our own, otherwise honor their manual setting
 			var useMobile = isEmpty(init.useMobile) ? (0, _utils.shouldEmbedMobile)() : init.useMobile;
+			init.useMobile = useMobile;
 	
 			// super, and create the builder
 	
-			var _this = _possibleConstructorReturn(this, (StickyBuilder.__proto__ || Object.getPrototypeOf(StickyBuilder)).call(this, cont, token, { useMobile: useMobile }));
+			var _this = _possibleConstructorReturn(this, (StickyBuilder.__proto__ || Object.getPrototypeOf(StickyBuilder)).call(this, cont, token, init));
 	
 			_initialiseProps.call(_this);
 	
@@ -860,8 +875,8 @@
 				// add defaults to init for any not provided
 				init = handleDefaults(init, _this.metadata);
 	
-				// if not drag and drop AND no addButtons given, then we don't want to embed because there won't be an adding method
-				if (!pollBuilder.dragAndDropSupported() && !init.addButtons) {
+				// if not drag and drop, no item/items used, AND no addButtons given then we don't want to embed because there won't be an adding method
+				if (!pollBuilder.dragAndDropSupported() && !init.addButtons && !init.item && !init.items) {
 					console.warn("Poll builder will not be embedded because this browser/device is not capable of drag and drop adding, and no other adding method is being used. Try the init option `addButtons` to allow adding that way.");
 					return { promise: Promise.resolve(null) };
 				}
@@ -911,6 +926,8 @@
 	
 				// float it to one side depending on the side it's on, cuz it makes it animate better
 				_this.iframe.style.float = init.side === 'right' ? 'left' : 'right';
+			}).catch(function (err) {
+				throw err;
 			});
 			return _this;
 		} // the container of the button used, as set up in init
@@ -1025,6 +1042,8 @@
 	exports.default = StickyBuilder;
 	function handleDefaults(init, metadata) {
 		init = init || {};
+		var theme = metadata.theme || {};
+	
 		init.side = (0, _utils.def)(init.side, 'right');
 		init.fromTop = (0, _utils.def)(init.fromTop, false);
 		init.buttonOffsetX = (0, _utils.def)(init.buttonOffsetX, 20);
@@ -1041,9 +1060,9 @@
 		init.backgroundColor = (0, _utils.def)(init.backgroundColor, '#fff');
 		init.addButtons = (0, _utils.def)(init.addButtons, false);
 		init.useMobile = (0, _utils.def)(init.useMobile, null);
-		init.buttonColor = (0, _utils.def)(init.buttonColor, metadata.theme.buttonColor || (!init.highlight ? '#fff' : init.highlight));
-		init.invertButton = (0, _utils.def)(init.invertButton, isEmpty(metadata.theme.invertButton) ? !!init.highlight : metadata.theme.invertButton);
-		init.highlight = (0, _utils.def)(init.highlight, metadata.theme.highlight || '#000');
+		init.buttonColor = (0, _utils.def)(init.buttonColor, theme.buttonColor || (!init.highlight ? '#fff' : init.highlight));
+		init.invertButton = (0, _utils.def)(init.invertButton, isEmpty(theme.invertButton) ? !!init.highlight : theme.invertButton);
+		init.highlight = (0, _utils.def)(init.highlight, theme.highlight || '#000');
 		init.buttonStyles = (0, _utils.def)(init.buttonStyles, 'box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);');
 		init.builderStyles = (0, _utils.def)(init.builderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;');
 		init.mobileButtonStyles = (0, _utils.def)(init.mobileButtonStyles, init.buttonStyles);
@@ -1100,7 +1119,7 @@
 			this.className = className;
 			this.circleBackground = circleBackground;
 			this.washPercent = washPercent;
-			this.blackText = blackText;console.log('black:', blackText);
+			this.blackText = blackText;
 			this.fadeBackground = fadeBackground;
 		}
 	

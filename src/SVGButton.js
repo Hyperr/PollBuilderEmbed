@@ -6,7 +6,7 @@ export default class SVGButton
 		this.className = className;
 		this.circleBackground = circleBackground;
 		this.washPercent = washPercent;
-		this.blackText = blackText;console.log('black:', blackText)
+		this.blackText = blackText;
 		this.fadeBackground = fadeBackground;
 	}
 	

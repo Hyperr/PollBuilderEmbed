@@ -51,6 +51,8 @@ export default class Builder extends EventDispatcher
 	{
 		super();
 		
+		opts = opts || {};
+		
 		var index = this.index = Builder.instances.length;
 		Builder.instances[index] = this;
 		
@@ -73,9 +75,19 @@ export default class Builder extends EventDispatcher
 				this.index = index;
 				this.cont = typeof cont==='string' ? window.document.querySelector(cont) : cont;
 				this.id = `pollbuilder-iframe-${this.index}`;
-				this.mobile = opts && opts.useMobile;
+				this.mobile = opts.useMobile;
 				
-				var urlWVars = `${pollBuilder._pollBuilderURL}/${token}?pollBuilderID=${this.id}&pollBuilderIndex=${index}&scriptVersion=${pollBuilder.version}${this.mobile?'&mobile=1':''}${pollBuilder.dragAndDropSupported()?'&dnd=1':''}`;
+				// for if manual items are supplied, as either `item` (one) or `items` (as an array), needs same object notation as the attribute on the element would have been
+				// if included, will kill any memory saved items in poll
+				var items = opts.items || (opts.item ? [opts.item] : null);
+				var itemsVar = items ? `&items=${encodeURIComponent(JSON.stringify(items))}` : '';
+				
+				var dndVar = pollBuilder.dragAndDropSupported() ? '&dnd=1' : '';
+				var mobVar = this.mobile ? '&mobile=1' : '';
+				var noSaveVar = opts.noSave ? '&noSave=1' : '';
+				var noDelVar = opts.noDelete ? '&noDelete=1' : '';
+				
+				var urlWVars = `${pollBuilder._pollBuilderURL}/${token}?pollBuilderID=${this.id}&pollBuilderIndex=${index}&scriptVersion=${pollBuilder.version}${mobVar}${dndVar}${itemsVar}${noSaveVar}${noDelVar}`;
 				var addHTML = `<iframe id="${this.id}" class="pollbuilder-iframe" onload="pollBuilder._iframeLoaded(${index});" src="${urlWVars}"></iframe><div class="pollbuilder-iframe-layover"></div>`;
 				addHTML += cssToAdd(); // adds static CSS needed if not already added
 				
@@ -100,6 +112,8 @@ export default class Builder extends EventDispatcher
 			{
 				reject(err);
 			})
+		}).catch(err=>{
+			throw err;
 		})
 	}
 	

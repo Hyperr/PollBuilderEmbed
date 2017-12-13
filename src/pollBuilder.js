@@ -16,7 +16,7 @@ import './Promise';
 class PollBuilder extends EventDispatcher
 {
 	// version is important so that pollbuilder served from hyperr knows what script is in use
-	version = '2.2.0'
+	version = '2.3.0'
 	
 	// whether or not this component is supported
 	isSupported = isSupported
@@ -51,9 +51,9 @@ class PollBuilder extends EventDispatcher
 	}
 	
 	// an easier way to use, creates a sticky version with certain data
-	embedSticky(token, init)
+	embedSticky(token, opts)
 	{
-		var inst = new StickyBuilder(token, init);
+		var inst = new StickyBuilder(token, opts);
 		return inst.promise;
 	}
 

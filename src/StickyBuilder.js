@@ -16,10 +16,10 @@ export default class StickyBuilder extends Builder
 		
 		// if init.useMobile is null then detect on our own, otherwise honor their manual setting
 		var useMobile = isEmpty(init.useMobile) ? shouldEmbedMobile() : init.useMobile;
+		init.useMobile = useMobile;
 		
 		// super, and create the builder
-		super(cont, token, {useMobile:useMobile});
-		
+		super(cont, token, init);
 		
 		this.promise.then(iframe=>
 		{
@@ -33,8 +33,8 @@ export default class StickyBuilder extends Builder
 			// add defaults to init for any not provided
 			init = handleDefaults(init, this.metadata);
 			
-			// if not drag and drop AND no addButtons given, then we don't want to embed because there won't be an adding method
-			if (!pollBuilder.dragAndDropSupported() && !init.addButtons) {
+			// if not drag and drop, no item/items used, AND no addButtons given then we don't want to embed because there won't be an adding method
+			if (!pollBuilder.dragAndDropSupported() && !init.addButtons && !init.item && !init.items) {
 				console.warn("Poll builder will not be embedded because this browser/device is not capable of drag and drop adding, and no other adding method is being used. Try the init option `addButtons` to allow adding that way.");
 				return {promise:Promise.resolve(null)};
 			}
@@ -61,7 +61,7 @@ export default class StickyBuilder extends Builder
 			// now add the cont to it, and add it to the page
 			sticky.appendChild(cont);
 			document.body.appendChild(sticky);
-		
+			
 			// we won't know the data width until the iframe randers and gives it to us via this event
 			this.addEventListener('pb:sizechange', this._onResize2);
 			this.addEventListener('pb:sizechange', this._onFirstResize);
@@ -78,6 +78,8 @@ export default class StickyBuilder extends Builder
 			
 			// float it to one side depending on the side it's on, cuz it makes it animate better
 			this.iframe.style.float = init.side==='right' ? 'left' : 'right';
+		}).catch(err=>{
+			throw err;
 		})
 	}
 	
@@ -223,6 +225,8 @@ export default class StickyBuilder extends Builder
 function handleDefaults(init, metadata)
 {
 	init = init || {};
+	var theme = metadata.theme || {};
+	
 	init.side = def(init.side, 'right');
 	init.fromTop = def(init.fromTop, false);
 	init.buttonOffsetX = def(init.buttonOffsetX, 20);
@@ -239,9 +243,9 @@ function handleDefaults(init, metadata)
 	init.backgroundColor = def(init.backgroundColor, '#fff');
 	init.addButtons = def(init.addButtons, false);
 	init.useMobile = def(init.useMobile, null);
-	init.buttonColor = def(init.buttonColor, metadata.theme.buttonColor || (!init.highlight?'#fff':init.highlight));
-	init.invertButton = def(init.invertButton, isEmpty(metadata.theme.invertButton) ? !!init.highlight : metadata.theme.invertButton);
-	init.highlight = def(init.highlight, metadata.theme.highlight || '#000');
+	init.buttonColor = def(init.buttonColor, theme.buttonColor || (!init.highlight?'#fff':init.highlight));
+	init.invertButton = def(init.invertButton, isEmpty(theme.invertButton) ? !!init.highlight : theme.invertButton);
+	init.highlight = def(init.highlight, theme.highlight || '#000');
 	init.buttonStyles = def(init.buttonStyles, 'box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);');
 	init.builderStyles = def(init.builderStyles, `box-shadow: 1px 0 1px ${init.highlight},-1px 0 1px ${init.highlight},0 1px 1px ${init.highlight},0 -1px 1px ${init.highlight}, 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;`);
 	init.mobileButtonStyles = def(init.mobileButtonStyles, init.buttonStyles);
