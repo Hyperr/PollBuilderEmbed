@@ -42,7 +42,7 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -256,9 +256,9 @@
 		}
 	});
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 	
@@ -316,9 +316,9 @@
 	
 	exports.default = EventDispatcher;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -407,9 +407,9 @@
 		if (typeof val === 'number') return val + 'px';else return val;
 	}
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 	
@@ -464,9 +464,9 @@
 		if (/tablet|ipad|playbook/.test(ua)) Platform.tablet = true;else if (/phone/.test(ua)) Platform.phone = true;else Platform.phone = true; // default to phone if unknown
 	}
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 	
@@ -497,9 +497,9 @@
 	
 	exports.default = Utils;
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -765,9 +765,9 @@
 		}
 	}
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -813,9 +813,9 @@
 		});
 	}
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -1093,9 +1093,9 @@
 		}
 	}
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -1126,7 +1126,7 @@
 		_createClass(SVGButton, [{
 			key: 'toString',
 			value: function toString() {
-				return '\n\t\t<div class="pollbuilder-button-state-cont pollbuilder-button-state-loading">\n\t\t\t<svg class="pollbuilder-button-state ' + this.className + '" viewBox="0 0 80 80" style="background-color:#ffffff00" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" x="0px" y="0px" width="80px" height="80px">\n\t\t\t\t<circle cx="40" cy="40" r="40" fill="' + this.fadeBackground + '" />\n\t\t\t\t<circle cx="40" cy="40" r="38.5" fill="' + this.circleBackground + '" stroke="' + (this.blackText ? '#000' : '#fff') + '" stroke-width="1.5" opacity="' + (1 - this.washPercent) + '" />\n\t\t\t</svg>\n\t\t\t<img style="position:absolute; top:27px; left:13px; width:56px; height:29px; opacity:' + (1 - this.washPercent) + ';" src="' + pollBuilder._pollBuilderURL + '/assets/other/poll_your_friends-' + (this.blackText ? 'black' : 'white') + '.png" onload="' + this.imgLoadCode() + '"/>\n\t\t</div>';
+				return '\n\t\t<div class="pollbuilder-button-state-cont pollbuilder-button-state-loading">\n\t\t\t<svg class="pollbuilder-button-state ' + this.className + '" style="background-color:#ffffff00" x="0px" y="0px" width="80px" height="80px" style="width:80px; height:80px;">\n\t\t\t\t<circle cx="40" cy="40" r="40" fill="' + this.fadeBackground + '" />\n\t\t\t</svg>\n\t\t\t<img style="position:absolute; top:27px; left:13px; width:56px; height:29px; opacity:' + (1 - this.washPercent) + ';" src="' + pollBuilder._pollBuilderURL + '/assets/other/poll_your_friends-' + (this.blackText ? 'black' : 'white') + '.png" onload="' + this.imgLoadCode() + '"/>\n\t\t</div>';
 			}
 		}, {
 			key: 'imgLoadCode',
@@ -1141,9 +1141,9 @@
 	
 	exports.default = SVGButton;
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {'use strict';
 	
@@ -1404,11 +1404,11 @@
 	})(undefined);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate))
 
-/***/ },
+/***/ }),
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
 	
 	var apply = Function.prototype.apply;
 	
@@ -1459,12 +1459,16 @@
 	
 	// setimmediate attaches itself to the global object
 	__webpack_require__(11);
-	exports.setImmediate = setImmediate;
-	exports.clearImmediate = clearImmediate;
+	// On some exotic environments, it's not clear which object `setimmeidate` was
+	// able to install onto.  Search each possibility in the same order as the
+	// `setimmediate` library.
+	exports.setImmediate = typeof self !== "undefined" && self.setImmediate || typeof global !== "undefined" && global.setImmediate || undefined && undefined.setImmediate;
+	exports.clearImmediate = typeof self !== "undefined" && self.clearImmediate || typeof global !== "undefined" && global.clearImmediate || undefined && undefined.clearImmediate;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
-/***/ },
+/***/ }),
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {"use strict";
 	
@@ -1652,9 +1656,9 @@
 	})(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(12)))
 
-/***/ },
+/***/ }),
 /* 12 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -1823,6 +1827,12 @@
 	process.removeListener = noop;
 	process.removeAllListeners = noop;
 	process.emit = noop;
+	process.prependListener = noop;
+	process.prependOnceListener = noop;
+	
+	process.listeners = function (name) {
+	    return [];
+	};
 	
 	process.binding = function (name) {
 	    throw new Error('process.binding is not supported');
@@ -1838,6 +1848,6 @@
 	    return 0;
 	};
 
-/***/ }
+/***/ })
 /******/ ]);
 //# sourceMappingURL=hyperr.pollbuilder.js.map
