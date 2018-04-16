@@ -1,10 +1,11 @@
 {
   "name": "pollbuilder-embed",
-  "version": "2.3.0",
+  "version": "2.3.2",
   "description": "Embeddable Polls in Your Website",
   "scripts": {
     "compile": "webpack && webpack --minimize",
-	"compile:testing": "webpack --testing"
+	"compile:testing": "webpack --testing",
+	"compile:watch:testing": "webpack --testing --watch"
   },
   "author": "Hyperr",
   "license": "UNLICENSED",

@@ -11,6 +11,10 @@ export default class StickyBuilder extends Builder
 	
 	constructor(token, init)
 	{
+		// allow them to just use a string for init to use for buttons
+		if (typeof init === 'string')
+			init = {addButtons:init};
+		
 		// create the container that holds the poll builder part
 		var cont = document.createElement('div');
 		
@@ -25,10 +29,6 @@ export default class StickyBuilder extends Builder
 		{
 			// if it didn't embed, that's the end of it
 			if (!this.iframe) return;
-			
-			// allow them to just use a string for init to use for buttons
-			if (typeof init === 'string')
-				init = {addButtons:init};
 			
 			// add defaults to init for any not provided
 			init = handleDefaults(init, this.metadata);
@@ -246,7 +246,7 @@ function handleDefaults(init, metadata)
 	init.buttonColor = def(init.buttonColor, theme.buttonColor || (!init.highlight?'#fff':init.highlight));
 	init.invertButton = def(init.invertButton, isEmpty(theme.invertButton) ? !!init.highlight : theme.invertButton);
 	init.highlight = def(init.highlight, theme.highlight || '#000');
-	init.buttonStyles = def(init.buttonStyles, 'box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);');
+	init.buttonStyles = def(init.buttonStyles, 'box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.15);');
 	init.builderStyles = def(init.builderStyles, `box-shadow: 1px 0 1px ${init.highlight},-1px 0 1px ${init.highlight},0 1px 1px ${init.highlight},0 -1px 1px ${init.highlight}, 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;`);
 	init.mobileButtonStyles = def(init.mobileButtonStyles, init.buttonStyles);
 	init.mobileBuilderStyles = def(init.mobileBuilderStyles, `box-shadow: 1px 0 1px ${init.highlight},-1px 0 1px ${init.highlight},0 1px 1px ${init.highlight},0 -1px 1px ${init.highlight}, 0 0 6px 0 rgba(0, 0, 0, 0.15);`);

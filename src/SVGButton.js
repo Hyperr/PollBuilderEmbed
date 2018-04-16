@@ -14,10 +14,11 @@ export default class SVGButton
 	{
 		return `
 		<div class="pollbuilder-button-state-cont pollbuilder-button-state-loading">
-			<svg class="pollbuilder-button-state ${this.className}" style="background-color:#ffffff00" x="0px" y="0px" width="80px" height="80px" style="width:80px; height:80px;">
+			<svg class="pollbuilder-button-state ${this.className}" style="background-color:#ffffff00; width:80px; height:80px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" x="0px" y="0px" width="80px" height="80px">
 				<circle cx="40" cy="40" r="40" fill="${this.fadeBackground}" />
+				<circle cx="40" cy="40" r="39.5" fill="${this.circleBackground}" stroke="${this.blackText ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}" stroke-width="1" opacity="${1-this.washPercent}" />
 			</svg>
-			<img style="position:absolute; top:27px; left:13px; width:56px; height:29px; opacity:${1-this.washPercent};" src="${pollBuilder._pollBuilderURL}/assets/other/poll_your_friends-${this.blackText ? 'black' : 'white'}.png" onload="${this.imgLoadCode()}"/>
+			<img style="position:absolute; top:27px; left:13.5px; width:56px; height:29px; opacity:${1-this.washPercent};" src="${pollBuilder._pollBuilderURL}/assets/other/poll_your_friends-${this.blackText ? 'black' : 'white'}.png" onload="${this.imgLoadCode()}"/>
 		</div>`
 	}
 	

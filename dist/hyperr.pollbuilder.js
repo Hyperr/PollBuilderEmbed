@@ -102,7 +102,7 @@
 				args[_key] = arguments[_key];
 			}
 	
-			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.3.0', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
+			return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = PollBuilder.__proto__ || Object.getPrototypeOf(PollBuilder)).call.apply(_ref, [this].concat(args))), _this), _this.version = '2.3.2', _this.isSupported = _utils.isSupported, _this.dragAndDropSupported = _utils.dragAndDropSupported, _this._apiURL = 'https://api.gethyperr.com', _this._pollBuilderURL = 'https://pollbuilder.gethyperr.com', _this._targetOrigin = 'https://pollbuilder.gethyperr.com', _this.utils = _UtilsClass2.default, _this.instances = _Builder2.default.instances, _temp), _possibleConstructorReturn(_this, _ret);
 		}
 		// version is important so that pollbuilder served from hyperr knows what script is in use
 	
@@ -852,6 +852,9 @@
 		function StickyBuilder(token, init) {
 			_classCallCheck(this, StickyBuilder);
 	
+			// allow them to just use a string for init to use for buttons
+			if (typeof init === 'string') init = { addButtons: init };
+	
 			// create the container that holds the poll builder part
 			var cont = document.createElement('div');
 	
@@ -868,9 +871,6 @@
 			_this.promise.then(function (iframe) {
 				// if it didn't embed, that's the end of it
 				if (!_this.iframe) return;
-	
-				// allow them to just use a string for init to use for buttons
-				if (typeof init === 'string') init = { addButtons: init };
 	
 				// add defaults to init for any not provided
 				init = handleDefaults(init, _this.metadata);
@@ -1063,7 +1063,7 @@
 		init.buttonColor = (0, _utils.def)(init.buttonColor, theme.buttonColor || (!init.highlight ? '#fff' : init.highlight));
 		init.invertButton = (0, _utils.def)(init.invertButton, isEmpty(theme.invertButton) ? !!init.highlight : theme.invertButton);
 		init.highlight = (0, _utils.def)(init.highlight, theme.highlight || '#000');
-		init.buttonStyles = (0, _utils.def)(init.buttonStyles, 'box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.15);');
+		init.buttonStyles = (0, _utils.def)(init.buttonStyles, 'box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.15);');
 		init.builderStyles = (0, _utils.def)(init.builderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 3px 3px 3px rgba(0, 0, 0, 0.15); border-radius: 6px;');
 		init.mobileButtonStyles = (0, _utils.def)(init.mobileButtonStyles, init.buttonStyles);
 		init.mobileBuilderStyles = (0, _utils.def)(init.mobileBuilderStyles, 'box-shadow: 1px 0 1px ' + init.highlight + ',-1px 0 1px ' + init.highlight + ',0 1px 1px ' + init.highlight + ',0 -1px 1px ' + init.highlight + ', 0 0 6px 0 rgba(0, 0, 0, 0.15);');
@@ -1126,7 +1126,7 @@
 		_createClass(SVGButton, [{
 			key: 'toString',
 			value: function toString() {
-				return '\n\t\t<div class="pollbuilder-button-state-cont pollbuilder-button-state-loading">\n\t\t\t<svg class="pollbuilder-button-state ' + this.className + '" style="background-color:#ffffff00" x="0px" y="0px" width="80px" height="80px" style="width:80px; height:80px;">\n\t\t\t\t<circle cx="40" cy="40" r="40" fill="' + this.fadeBackground + '" />\n\t\t\t</svg>\n\t\t\t<img style="position:absolute; top:27px; left:13px; width:56px; height:29px; opacity:' + (1 - this.washPercent) + ';" src="' + pollBuilder._pollBuilderURL + '/assets/other/poll_your_friends-' + (this.blackText ? 'black' : 'white') + '.png" onload="' + this.imgLoadCode() + '"/>\n\t\t</div>';
+				return '\n\t\t<div class="pollbuilder-button-state-cont pollbuilder-button-state-loading">\n\t\t\t<svg class="pollbuilder-button-state ' + this.className + '" style="background-color:#ffffff00; width:80px; height:80px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" x="0px" y="0px" width="80px" height="80px">\n\t\t\t\t<circle cx="40" cy="40" r="40" fill="' + this.fadeBackground + '" />\n\t\t\t\t<circle cx="40" cy="40" r="39.5" fill="' + this.circleBackground + '" stroke="' + (this.blackText ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)') + '" stroke-width="1" opacity="' + (1 - this.washPercent) + '" />\n\t\t\t</svg>\n\t\t\t<img style="position:absolute; top:27px; left:13.5px; width:56px; height:29px; opacity:' + (1 - this.washPercent) + ';" src="' + pollBuilder._pollBuilderURL + '/assets/other/poll_your_friends-' + (this.blackText ? 'black' : 'white') + '.png" onload="' + this.imgLoadCode() + '"/>\n\t\t</div>';
 			}
 		}, {
 			key: 'imgLoadCode',
